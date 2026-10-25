@@ -73,8 +73,8 @@ export default function Footer() {
 
   return (
     <footer className="overflow-hidden border-t bg-background px-5 pt-16">
-      <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
-        <div>
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-10 sm:gap-x-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
+        <div className="col-span-2 sm:col-span-1">
           <p className="text-sm font-medium">Let&apos;s grow together</p>
           <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
             <li className="flex items-center gap-3">
