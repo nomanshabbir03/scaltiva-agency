@@ -1,18 +1,14 @@
 import { motion, useReducedMotion } from "motion/react";
-import { Eye, Handshake, Lightbulb, MessageSquareText, Rocket, ShieldCheck, Target, User, type LucideIcon } from "lucide-react";
+import { Eye, Target, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 import CallToAction from "@/components/CallToAction";
+import AboutStory from "@/components/about/AboutStory";
+import InsideSlider from "@/components/about/InsideSlider";
+import ValuesList from "@/components/about/ValuesList";
+import ApproachBanner from "@/components/about/ApproachBanner";
 import { TEAM } from "@/data/team";
 import { absoluteUrl, SITE } from "@/lib/site";
-
-const VALUES: { title: string; text: string; icon: LucideIcon }[] = [
-  { title: "Clarity", text: "Plain language, transparent pricing and honest timelines. You always know what is happening and why.", icon: MessageSquareText },
-  { title: "Quality", text: "We sweat the details, from clean code to well-written content, because the small things add up.", icon: ShieldCheck },
-  { title: "Partnership", text: "We work as an extension of your team and treat your goals as our own.", icon: Handshake },
-  { title: "Results", text: "Pretty is not enough. We measure what we do and focus on outcomes that matter to your business.", icon: Rocket },
-  { title: "Curiosity", text: "The digital world moves fast. We keep learning so you benefit from what works now, not last year.", icon: Lightbulb },
-];
 
 const PATH = "/about";
 const TITLE = "About Scaltiva | Our Mission, Vision, Values & Team";
@@ -72,23 +68,7 @@ export default function About() {
       </header>
 
       <main id="main-content">
-        {/* Story */}
-        <section className="px-5 py-16 lg:py-24">
-          <motion.div className="mx-auto max-w-3xl" {...fadeUp()}>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Who we are</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">One team for your whole digital presence</h2>
-            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-              Too many businesses end up with a developer who does not talk to the marketer, and a marketer who
-              cannot change the website. We built {SITE.name} to fix that. Our team covers the full journey: the
-              website, the automation behind it, the search visibility that brings visitors, and the campaigns
-              that turn them into customers.
-            </p>
-            <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-              Because everything lives in one place, projects move faster, messaging stays consistent and
-              nothing gets lost in hand-offs.
-            </p>
-          </motion.div>
-        </section>
+        <AboutStory />
 
         {/* Mission & Vision */}
         <section className="px-5 pb-16 lg:pb-24">
@@ -122,32 +102,9 @@ export default function About() {
           </div>
         </section>
 
-        {/* Values */}
-        <section className="bg-accent/50 px-5 py-16 lg:py-24">
-          <div className="mx-auto max-w-6xl">
-            <motion.div className="mx-auto max-w-2xl text-center" {...fadeUp()}>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">What we stand for</p>
-              <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight sm:text-5xl">
-                Our <span className="text-primary">values</span>
-              </h2>
-            </motion.div>
-            <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {VALUES.map(({ title, text, icon: Icon }, i) => (
-                <motion.li
-                  key={title}
-                  className="group rounded-2xl border bg-background p-7 transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10"
-                  {...fadeUp((i % 3) * 0.1)}
-                >
-                  <span className="grid size-12 place-items-center rounded-xl bg-accent text-primary transition duration-300 group-hover:rotate-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
-                    <Icon className="size-6" />
-                  </span>
-                  <h3 className="mt-5 text-xl font-semibold">{title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
-                </motion.li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        <InsideSlider />
+        <ValuesList />
+        <ApproachBanner />
 
         {/* Team */}
         <section id="team" className="px-5 py-16 lg:py-24">
