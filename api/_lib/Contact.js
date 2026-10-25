@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const contactSchema = new mongoose.Schema(
   {
@@ -7,7 +7,7 @@ const contactSchema = new mongoose.Schema(
     service: { type: String, enum: ['development', 'automation', 'seo', 'marketing', 'other'], default: 'other' },
     message: { type: String, required: true, trim: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 )
 
-module.exports = mongoose.model('Contact', contactSchema)
+export default mongoose.models.Contact || mongoose.model('Contact', contactSchema)
