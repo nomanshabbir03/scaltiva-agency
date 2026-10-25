@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Outlet, Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Chatbot from "@/components/Chatbot";
 import Home from "@/pages/Home";
 import ServicePage from "@/pages/ServicePage";
 import About from "@/pages/About";
@@ -37,6 +38,7 @@ function Layout() {
       <Navbar />
       <Outlet />
       <Footer />
+      <Chatbot />
     </>
   );
 }

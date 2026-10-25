@@ -4,6 +4,9 @@ export const SITE = {
   name: "Scaltiva",
   url: "https://scaltiva.com",
   email: "hello@scaltiva.com",
+  /** WhatsApp number in international format, digits only (used by the chatbot). */
+  whatsapp: "923114534400",
+  whatsappDisplay: "+92 311 4534400",
   tagline: "Development, automation, SEO and marketing under one roof",
   ogImage: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=75",
 };
