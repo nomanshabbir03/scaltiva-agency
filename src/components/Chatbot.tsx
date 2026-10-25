@@ -26,10 +26,39 @@ export default function Chatbot() {
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
-  // Keep the newest message in view, and focus the box when the chat opens.
+  // Phones only: the chat becomes a full-screen sheet that follows the
+  // *visible* viewport, so the on-screen keyboard never covers it.
+  const [mobile, setMobile] = useState(false);
+  const [viewport, setViewport] = useState<{ top: number; height: number } | null>(null);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!open || !mobile || !vv) return;
+    const update = () => setViewport({ top: vv.offsetTop, height: vv.height });
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    // Stop the page behind from scrolling while the chat is open.
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+      document.body.style.overflow = previous;
+      setViewport(null);
+    };
+  }, [open, mobile]);
+
+  // Keep the newest message in view (also when the keyboard resizes the sheet).
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "end" });
-  }, [messages, typing, reduce]);
+  }, [messages, typing, reduce, viewport?.height]);
   useEffect(() => {
     if (open) input.current?.focus();
   }, [open]);
@@ -72,7 +101,13 @@ export default function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: reduce ? 0 : 20, scale: reduce ? 1 : 0.96 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="fixed bottom-28 right-4 z-50 flex h-[min(34rem,calc(100dvh-8rem))] w-[min(23rem,calc(100vw-2rem))] origin-bottom-right flex-col overflow-hidden rounded-3xl border bg-background shadow-2xl shadow-primary/20 sm:right-6"
+            style={mobile ? { top: viewport?.top ?? 0, height: viewport?.height ?? "100dvh" } : undefined}
+            className={cn(
+              "fixed z-50 flex flex-col overflow-hidden bg-background shadow-2xl shadow-primary/20",
+              mobile
+                ? "inset-x-0"
+                : "bottom-28 right-4 h-[min(34rem,calc(100dvh-8rem))] w-[min(23rem,calc(100vw-2rem))] origin-bottom-right rounded-3xl border sm:right-6",
+            )}
           >
             {/* Header */}
             <div className="flex items-center gap-3 bg-primary px-5 py-4 text-primary-foreground">
@@ -183,7 +218,7 @@ export default function Chatbot() {
                 maxLength={300}
                 autoComplete="off"
                 placeholder="Type your question..."
-                className="min-w-0 flex-1 rounded-full border bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-ring/30"
+                className="min-w-0 flex-1 rounded-full border bg-background px-4 py-2.5 text-base outline-none sm:text-sm transition focus:border-primary focus:ring-2 focus:ring-ring/30"
               />
               <button
                 type="submit"
@@ -208,6 +243,8 @@ export default function Chatbot() {
           className="pointer-events-none fixed bottom-5 right-4 z-40 size-16 rounded-full bg-primary/50 motion-safe:animate-ping sm:right-6"
         />
       )}
+      {/* On phones the open chat is a full-screen sheet with its own close button. */}
+      {!(open && mobile) && (
       <motion.button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -222,6 +259,7 @@ export default function Chatbot() {
           <span aria-hidden className="absolute -right-0.5 -top-0.5 size-3.5 rounded-full bg-primary ring-2 ring-background" />
         )}
       </motion.button>
+      )}
     </>
   );
 }
