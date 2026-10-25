@@ -1,0 +1,21 @@
+# Scaltiva
+
+> Scaltiva is a digital agency offering web development, business automation, SEO and digital marketing from one team.
+
+## Services
+
+- [Web development](https://scaltiva.com/services/development): custom websites, web apps and online stores built with React, Node.js and MongoDB.
+- [Business automation](https://scaltiva.com/services/automation): workflow automation, CRM and API integrations, and AI assistants.
+- [SEO](https://scaltiva.com/services/seo): technical SEO, content, local SEO and AI search optimization.
+- [Digital marketing](https://scaltiva.com/services/marketing): strategy, paid ads, social media, email and content marketing.
+
+## Company
+
+- [About Scaltiva](https://scaltiva.com/about): our mission, vision, values and team.
+- [Our work](https://scaltiva.com/work): selected projects and results.
+- [How it works](https://scaltiva.com/how-it-works): our process from first call to launch and support.
+- [Contact](https://scaltiva.com/contact): request a free consultation and quote.
+
+## Contact
+
+- Email: hello@scaltiva.com
