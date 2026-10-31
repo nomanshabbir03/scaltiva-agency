@@ -17,7 +17,7 @@ export const PROJECTS: Project[] = [
     category: "Development",
     result: "+64% conversion rate",
     description: "A faster, mobile-first store with a simpler checkout and clean product pages.",
-    image: photo("photo-1460925895917-afdab827c52f"),
+    image: photo("photo-1607082348824-0a96f2a4b9da"),
     wide: true,
   },
   {
@@ -25,21 +25,21 @@ export const PROJECTS: Project[] = [
     category: "Automation",
     result: "20 hrs/week saved",
     description: "Lead capture, routing and follow-up connected end to end, with no manual copy-pasting.",
-    image: photo("photo-1518770660439-4636190af475"),
+    image: photo("photo-1556155092-490a1ba16284"),
   },
   {
     title: "Local Search Growth",
     category: "SEO",
     result: "3x organic traffic",
     description: "Technical fixes, location pages and content that won nearby customers on Google.",
-    image: photo("photo-1551288049-bebda4e38f71"),
+    image: photo("photo-1524813686514-a57563d77965"),
   },
   {
     title: "Product Launch Campaign",
     category: "Marketing",
     result: "+128% reach",
     description: "Paid, social and email working together to launch a new product to the right audience.",
-    image: photo("photo-1432888498266-38ffec3eaf0a"),
+    image: photo("photo-1611926653458-09294b3142bf"),
     wide: true,
   },
   {
