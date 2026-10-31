@@ -54,7 +54,7 @@ export default function Services() {
     <section id="services" className="bg-background px-5 py-20 lg:py-28">
       <div className="mx-auto max-w-6xl">
         <motion.div
-          className="grid gap-6 lg:grid-cols-2 lg:items-end"
+          className="text-center"
           initial={{ opacity: reduce ? 1 : 0, y: reduce ? 0 : 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
@@ -68,10 +68,6 @@ export default function Services() {
               We&apos;re Offering
             </h2>
           </div>
-          <p className="max-w-md text-sm leading-relaxed text-muted-foreground lg:justify-self-end">
-            We help businesses improve their visibility, expand their reach and grow revenue through
-            effective digital strategies. Here is what we provide.
-          </p>
         </motion.div>
 
         <ul className="mt-14 border-t" onMouseLeave={() => setActive(null)}>
