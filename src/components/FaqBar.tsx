@@ -3,9 +3,9 @@ import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * A single bar, closed by default. Clicking it reveals `children` in the
- * right half of the page. The content stays in the DOM while closed (collapsed
- * with a CSS grid transition), so crawlers and AI can still read it.
+ * A single bar, closed by default. Clicking it reveals `children` centred
+ * under the bar. The content stays in the DOM while closed (collapsed with a
+ * CSS grid transition), so crawlers and AI can still read it.
  */
 export default function FaqBar({ title, children }: { title: string; children: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -35,7 +35,7 @@ export default function FaqBar({ title, children }: { title: string; children: R
         )}
       >
         <div className="overflow-hidden">
-          <div className="lg:ml-[50%]">{children}</div>
+          <div className="mx-auto max-w-3xl">{children}</div>
         </div>
       </div>
     </div>
