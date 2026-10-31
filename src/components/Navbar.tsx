@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 // Section links use "/#id" so they also work from inner pages.
 const LINKS = [
-  { label: "Work", href: "/work" },
+  { label: "Portfolio", href: "/work" },
   { label: "How It Works", href: "/how-it-works" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
