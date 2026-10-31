@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from "motion/react";
+import { useRef } from "react";
+import { motion, useReducedMotion, useScroll } from "motion/react";
 import { Link } from "react-router-dom";
 import { Check } from "lucide-react";
 import Seo from "@/components/Seo";
@@ -6,6 +7,7 @@ import PageHeader from "@/components/PageHeader";
 import ServiceFaq from "@/components/ServiceFaq";
 import CallToAction from "@/components/CallToAction";
 import { absoluteUrl } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 const STEPS = [
   {
@@ -61,6 +63,8 @@ const DESCRIPTION =
 
 export default function HowItWorksPage() {
   const reduce = useReducedMotion();
+  const timeline = useRef<HTMLOListElement>(null);
+  const { scrollYProgress } = useScroll({ target: timeline, offset: ["start 60%", "end 60%"] });
   const fadeUp = {
     initial: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 28 },
     whileInView: { opacity: 1, y: 0 },
@@ -109,20 +113,45 @@ export default function HowItWorksPage() {
       />
 
       <main id="main-content" className="px-5 py-16 lg:py-24">
-        <ol className="mx-auto max-w-4xl">
+        <motion.h2
+          className="mx-auto max-w-6xl text-balance text-center text-4xl font-bold tracking-tight sm:text-5xl"
+          {...fadeUp}
+        >
+          Your project, <span className="text-primary">step by step</span>
+        </motion.h2>
+
+        <ol ref={timeline} className="relative mx-auto mt-14 max-w-6xl lg:mt-20">
+          {/* The line runs from the first dot and fills with orange on scroll. */}
+          <span aria-hidden className="absolute bottom-0 left-6 top-[86px] w-px bg-border lg:left-1/2 lg:top-[124px]">
+            <motion.span
+              style={{ scaleY: reduce ? 1 : scrollYProgress, transformOrigin: "50% 0%" }}
+              className="block size-full bg-primary"
+            />
+          </span>
+
           {STEPS.map((s, i) => (
-            <motion.li key={s.title} className="relative flex gap-5 pb-12 last:pb-0 sm:gap-8" {...fadeUp}>
-              {/* Vertical line joining the numbered badges. */}
-              {i < STEPS.length - 1 && (
-                <span aria-hidden className="absolute bottom-0 left-6 top-14 w-0.5 bg-primary/25" />
-              )}
-              <span className="relative z-10 grid size-12 shrink-0 place-items-center rounded-full bg-primary text-lg font-bold text-primary-foreground shadow-lg shadow-primary/30">
+            <li key={s.title} className="relative grid pb-16 pl-16 last:pb-0 sm:pl-20 lg:grid-cols-2 lg:gap-x-32 lg:pb-24 lg:pl-0">
+              <motion.span
+                aria-hidden
+                className="absolute left-6 top-[62px] z-10 grid size-12 -translate-x-1/2 place-items-center rounded-full bg-primary text-lg font-bold text-primary-foreground ring-8 ring-background lg:left-1/2 lg:top-[96px] lg:size-14"
+                initial={{ scale: reduce ? 1 : 0.6 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              >
                 {i + 1}
-              </span>
-              <div className="min-w-0 flex-1 rounded-2xl border bg-background p-6 transition hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 sm:p-8">
-                <h2 className="text-2xl font-semibold">{s.title}</h2>
-                <p className="mt-2 leading-relaxed text-muted-foreground">{s.text}</p>
-                <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2">
+              </motion.span>
+
+              <motion.div className={cn("min-w-0", i % 2 === 1 && "lg:col-start-2")} {...fadeUp}>
+                <span aria-hidden className="block text-6xl font-light leading-none tracking-tight text-orange-200 lg:text-8xl">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="mt-2 text-3xl font-medium tracking-tight sm:text-4xl">
+                  <span className="sr-only">Step {i + 1}: </span>
+                  {s.title}
+                </h3>
+                <p className="mt-4 leading-relaxed text-muted-foreground">{s.text}</p>
+                <dl className="mt-6 grid gap-4 text-sm sm:grid-cols-2">
                   <div className="rounded-xl bg-accent/60 p-4">
                     <dt className="font-semibold">What we need from you</dt>
                     <dd className="mt-1 text-muted-foreground">{s.you}</dd>
@@ -134,8 +163,8 @@ export default function HowItWorksPage() {
                     <dd className="mt-1 text-muted-foreground">{s.get}</dd>
                   </div>
                 </dl>
-              </div>
-            </motion.li>
+              </motion.div>
+            </li>
           ))}
         </ol>
 
