@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight } from "lucide-react";
+import { SITE } from "@/lib/site";
 
 export default function CallToAction() {
   const reduce = useReducedMotion();
@@ -44,10 +45,10 @@ export default function CallToAction() {
               Get a free quote <ArrowRight className="size-4" />
             </motion.a>
             <a
-              href="mailto:hello@scaltiva.com"
+              href={`mailto:${SITE.email}`}
               className="text-sm font-semibold underline-offset-4 hover:underline"
             >
-              or email hello@scaltiva.com
+              or email {SITE.email}
             </a>
           </div>
         </div>

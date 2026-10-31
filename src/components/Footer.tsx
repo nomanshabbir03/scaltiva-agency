@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { SITE } from "@/lib/site";
 
 const COLUMNS = [
   {
@@ -36,14 +37,14 @@ const COLUMNS = [
 const SOCIALS = [
   {
     label: "Facebook",
-    href: "#",
+    href: SITE.socials.facebook,
     icon: (
       <path d="M14 8h2V5h-2.5C10.9 5 10 6.600 10 8.500V10H8v3h2v7h3v-7h2.200l.5-3H13V8.700c0-.4.2-.7 1-.7z" fill="currentColor" />
     ),
   },
   {
     label: "Instagram",
-    href: "#",
+    href: SITE.socials.instagram,
     icon: (
       <>
         <rect x="4" y="4" width="16" height="16" rx="5" fill="none" stroke="currentColor" strokeWidth="2" />
@@ -54,7 +55,7 @@ const SOCIALS = [
   },
   {
     label: "LinkedIn",
-    href: "#",
+    href: SITE.socials.linkedin,
     icon: (
       <>
         <circle cx="6" cy="6" r="2" fill="currentColor" />
@@ -79,11 +80,11 @@ export default function Footer() {
           <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
             <li className="flex items-center gap-3">
               <Mail className="size-4 shrink-0 text-primary" />
-              <a href="mailto:hello@scaltiva.com" className="hover:text-primary">hello@scaltiva.com</a>
+              <a href={`mailto:${SITE.email}`} className="hover:text-primary">{SITE.email}</a>
             </li>
             <li className="flex items-center gap-3">
               <Phone className="size-4 shrink-0 text-primary" />
-              <a href="tel:+10000000000" className="hover:text-primary">+1 (000) 000-0000</a>
+              <a href={`tel:+${SITE.whatsapp}`} className="hover:text-primary">{SITE.whatsappDisplay}</a>
             </li>
             <li className="flex items-center gap-3">
               <MapPin className="size-4 shrink-0 text-primary" />
@@ -110,10 +111,12 @@ export default function Footer() {
         <div>
           <h3 className={headingClass}>Follow</h3>
           <ul className="mt-5 flex gap-4">
-            {SOCIALS.map((s) => (
+            {SOCIALS.filter((s) => s.href).map((s) => (
               <li key={s.label}>
                 <a
                   href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={s.label}
                   className="grid size-11 place-items-center rounded-full text-foreground transition hover:bg-primary hover:text-primary-foreground"
                 >

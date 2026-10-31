@@ -12,6 +12,8 @@
 //
 // Entries are checked in order, so keep specific ones above general ones.
 
+import { SITE } from "@/lib/site";
+
 export type Entry = {
   id: string;
   /** Text of the quick-reply button for this entry. */
@@ -532,9 +534,9 @@ export const KB: Entry[] = [
     label: "Contact us",
     keywords: ["contact", "contact us", "reach", "talk to", "speak to", "call", "call you", "phone", "number", "email", "mail", "whatsapp", "human", "agent", "real person", "representative", "support", "help me", "rabta", "raabta", "baat karni", "baat karna", "number chahiye"],
     answer:
-      "You can reach us on WhatsApp at +92 311 4534400, through the contact form, or by email at hello@scaltiva.com. We aim to reply within one business day.",
+      `You can reach us on WhatsApp at ${SITE.whatsappDisplay}, through the contact form, or by email at ${SITE.email}. We aim to reply within one business day.`,
     roman:
-      "Aap humse WhatsApp par +92 311 4534400 par, contact form ke zariye, ya hello@scaltiva.com par email se rabta kar sakte hain. Hum aam taur par aik business din mein jawab dene ki koshish karte hain.",
+      `Aap humse WhatsApp par ${SITE.whatsappDisplay} par, contact form ke zariye, ya ${SITE.email} par email se rabta kar sakte hain. Hum aam taur par aik business din mein jawab dene ki koshish karte hain.`,
     links: [{ label: "Contact form", to: "/contact" }],
     whatsapp: "Hi Scaltiva, I'd like to get in touch.",
   },

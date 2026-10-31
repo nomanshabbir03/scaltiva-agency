@@ -123,7 +123,7 @@ export default function Contact() {
                 <div>
                   <dt className="text-foreground/70">Phone:</dt>
                   <dd className="mt-1 text-2xl">
-                    <a href="tel:+10000000000" className="transition hover:text-primary">+1 (000) 000-0000</a>
+                    <a href={`tel:+${SITE.whatsapp}`} className="transition hover:text-primary">{SITE.whatsappDisplay}</a>
                   </dd>
                   <dd className="mt-1 text-sm text-muted-foreground">Available Monday to Friday, 9 AM - 6 PM</dd>
                 </div>
