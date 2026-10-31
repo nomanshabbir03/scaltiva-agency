@@ -52,71 +52,81 @@ export default function HowItWorks() {
     return () => io.disconnect();
   }, []);
 
+  // Load every sticky image up front so a swap never fades in an empty box.
+  useEffect(() => {
+    if (!window.matchMedia("(min-width: 1024px)").matches) return;
+    STEPS.forEach((s) => {
+      new Image().src = s.image;
+    });
+  }, []);
+
   return (
     <section id="process" className="bg-accent/50 px-5 py-20 lg:py-28">
-      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:gap-20">
-        {/* Left: stays in view while the steps scroll past. */}
-        <div className="lg:sticky lg:top-28 lg:self-start">
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Our <span className="text-primary">Process</span>
-          </h2>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-            A simple, transparent process, so you always know what happens next, from the first call to
-            launch and beyond.
-          </p>
+      <div className="mx-auto max-w-6xl">
+        <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
+          Our <span className="text-primary">Process</span>
+        </h2>
+        <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
+          A simple, transparent process, so you always know what happens next, from the first call to
+          launch and beyond.
+        </p>
 
-          <div className="relative mt-8 hidden aspect-[4/3] max-w-lg overflow-hidden rounded-xl bg-muted shadow-xl shadow-primary/10 lg:block">
-            <AnimatePresence mode="popLayout" initial={false}>
-              <motion.img
-                key={active}
-                src={STEPS[active].image}
-                alt={STEPS[active].title}
-                initial={{ opacity: 0, scale: reduce ? 1 : 1.08 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: reduce ? 0 : 0.6, ease: "easeOut" }}
-                className="absolute inset-0 size-full object-cover"
-              />
-            </AnimatePresence>
+        <div className="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-20">
+          {/* Left: stays in view while the steps scroll past. */}
+          <div className="hidden lg:sticky lg:top-28 lg:block lg:self-start">
+            <div className="relative aspect-[4/3] max-w-lg overflow-hidden rounded-xl bg-muted shadow-xl shadow-primary/10">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.img
+                  key={active}
+                  src={STEPS[active].image}
+                  alt={STEPS[active].title}
+                  initial={{ opacity: 0, scale: reduce ? 1 : 1.08 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: reduce ? 0 : 0.6, ease: "easeOut" }}
+                  className="absolute inset-0 size-full object-cover"
+                />
+              </AnimatePresence>
+            </div>
+
+            <Link
+              to="/contact"
+              className="mt-5 inline-flex items-center gap-2 text-xs font-semibold transition hover:text-primary"
+            >
+              <CornerDownRight className="size-4 text-primary" /> Get in touch
+            </Link>
           </div>
 
-          <Link
-            to="/contact"
-            className="mt-5 hidden items-center gap-2 text-xs font-semibold transition hover:text-primary lg:inline-flex"
-          >
-            <CornerDownRight className="size-4 text-primary" /> Get in touch
-          </Link>
+          {/* Right: the steps. */}
+          <ol>
+            {STEPS.map((s, i) => (
+              <li
+                key={s.title}
+                data-index={i}
+                ref={(el) => {
+                  stepRefs.current[i] = el;
+                }}
+                className={cn(
+                  "border-b py-10 transition-opacity duration-500 last:border-b-0 lg:min-h-[60vh] lg:py-16 lg:first:pt-0",
+                  i === active ? "opacity-100" : "lg:opacity-35",
+                )}
+              >
+                <span className="block text-7xl font-light tracking-tight sm:text-8xl">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="mt-6 text-xl font-semibold">{s.title}</h3>
+                <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">{s.description}</p>
+                {/* On small screens the sticky image is hidden, so each step carries its own. */}
+                <img
+                  src={s.image}
+                  alt={s.title}
+                  loading="lazy"
+                  className="mt-6 aspect-[4/3] w-full rounded-xl object-cover lg:hidden"
+                />
+              </li>
+            ))}
+          </ol>
         </div>
-
-        {/* Right: the steps. */}
-        <ol>
-          {STEPS.map((s, i) => (
-            <li
-              key={s.title}
-              data-index={i}
-              ref={(el) => {
-                stepRefs.current[i] = el;
-              }}
-              className={cn(
-                "border-b py-10 transition-opacity duration-500 last:border-b-0 lg:min-h-[60vh] lg:py-16",
-                i === active ? "opacity-100" : "lg:opacity-35",
-              )}
-            >
-              <span className="block text-7xl font-light tracking-tight sm:text-8xl">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <h3 className="mt-6 text-xl font-semibold">{s.title}</h3>
-              <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">{s.description}</p>
-              {/* On small screens the sticky image is hidden, so each step carries its own. */}
-              <img
-                src={s.image}
-                alt={s.title}
-                loading="lazy"
-                className="mt-6 aspect-[4/3] w-full rounded-xl object-cover lg:hidden"
-              />
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   );
