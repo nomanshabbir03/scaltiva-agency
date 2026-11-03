@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Loader2, UserPlus, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { card, primaryButton } from "@/components/portal/form";
+import { primaryButton } from "@/components/portal/form";
 import { useToast } from "@/components/portal/Toast";
 import EnrollPicker, { type Option } from "@/components/portal/EnrollPicker";
 
@@ -15,7 +15,7 @@ type Enrollment = {
 
 const SELECT = "id, enrolled_at, user_id, profiles(full_name, email)";
 
-// "Enrolled students" section on the admin course page.
+// Body of the "Enrolled students" section on the admin course page.
 export default function CourseStudents({ courseId }: { courseId: string }) {
   const [enrollments, setEnrollments] = useState<Enrollment[] | null>(null);
   const [students, setStudents] = useState<Option[]>([]);
@@ -63,10 +63,7 @@ export default function CourseStudents({ courseId }: { courseId: string }) {
   const enrolledIds = new Set(enrollments?.map((e) => e.user_id));
 
   return (
-    <section className={`${card} mt-6`}>
-      <h2 className="text-xl font-semibold">
-        Enrolled students {enrollments && <span className="text-muted-foreground">({enrollments.length})</span>}
-      </h2>
+    <div>
 
       {!enrollments ? (
         <div className="grid place-items-center py-10" role="status" aria-label="Loading">
@@ -134,6 +131,6 @@ export default function CourseStudents({ courseId }: { courseId: string }) {
           </button>
         )}
       </div>
-    </section>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { BookOpen, LayoutDashboard, NotebookPen, Users } from "lucide-react";
+import { BookOpen, ClipboardCheck, LayoutDashboard, NotebookPen, Users } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { LogoutButton } from "@/components/portal/PortalLayout";
@@ -8,6 +8,7 @@ const LINKS = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/admin/students", label: "Students", icon: Users, end: false },
   { to: "/admin/courses", label: "Courses", icon: BookOpen, end: false },
+  { to: "/admin/reviews", label: "To review", icon: ClipboardCheck, end: false },
   { to: "/admin/notes", label: "My notes", icon: NotebookPen, end: false },
 ];
 

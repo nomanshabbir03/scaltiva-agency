@@ -18,7 +18,7 @@ const isHttpUrl = (value: string) => /^https?:\/\/\S+$/i.test(value);
 
 // Create (no course passed) or edit a course. New courses get a unique slug
 // from the title; when editing, the slug can be changed by hand.
-export default function CourseForm({ course, onSaved }: { course?: Course; onSaved: (course: Course) => void }) {
+export default function CourseForm({ course, onSaved, bare }: { course?: Course; onSaved: (course: Course) => void; bare?: boolean }) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<Message>(null);
 
@@ -53,7 +53,7 @@ export default function CourseForm({ course, onSaved }: { course?: Course; onSav
   }
 
   return (
-    <form onSubmit={onSubmit} className={`${card} space-y-5`}>
+    <form onSubmit={onSubmit} className={bare ? "space-y-5 pt-2" : `${card} space-y-5`}>
       <div>
         <label htmlFor="title" className={label}>Title</label>
         <input id="title" name="title" required maxLength={150} defaultValue={course?.title} className={input} />

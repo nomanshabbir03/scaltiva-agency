@@ -19,6 +19,7 @@ import Timeline from "@/pages/portal/Timeline";
 import Exercises from "@/pages/portal/Exercises";
 import ExercisePage from "@/pages/portal/ExercisePage";
 import ExerciseDetail from "@/pages/admin/ExerciseDetail";
+import Reviews from "@/pages/admin/Reviews";
 import Notes from "@/pages/portal/Notes";
 import NoteEditor from "@/pages/portal/NoteEditor";
 import AdminOverview from "@/pages/admin/Overview";
@@ -92,6 +93,7 @@ export default function App() {
           <Route path="courses/new" element={<NewCourse />} />
           <Route path="courses/:id" element={<CourseDetail />} />
           <Route path="exercises/:id" element={<ExerciseDetail />} />
+          <Route path="reviews" element={<Reviews />} />
           <Route path="notes" element={<Notes />} />
           <Route path="notes/:id" element={<NoteEditor />} />
         </Route>

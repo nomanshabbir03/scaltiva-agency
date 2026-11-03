@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { BarChart3, BookOpen, ClipboardList, CheckCircle2, KeyRound, Loader2, NotebookPen, PlayCircle, TrendingUp, UserRound, X } from "lucide-react";
+import { BarChart3, BookOpen, ClipboardList, CheckCircle2, KeyRound, Loader2, Megaphone, NotebookPen, PlayCircle, TrendingUp, UserRound, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import Avatar from "@/components/portal/Avatar";
@@ -14,6 +14,20 @@ type Course = {
 };
 
 type Row = { lesson_id: string; completed: boolean; updated_at: string };
+
+type Announcement = { id: string; title: string; body: string; created_at: string; courses: { title: string } | null };
+
+const NEW_FOR_MS = 7 * 24 * 60 * 60 * 1000;
+const DISMISSED_KEY = "scaltiva-dismissed-announcements";
+
+// Which announcement banners this browser has closed. Storage can be unavailable (private mode), so never let it throw.
+function readDismissed(): string[] {
+  try {
+    return JSON.parse(localStorage.getItem(DISMISSED_KEY) ?? "[]");
+  } catch {
+    return [];
+  }
+}
 
 // Card with the orange header bar.
 function Panel({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
@@ -54,6 +68,8 @@ export default function Dashboard() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loadError, setLoadError] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [dismissed, setDismissed] = useState<string[]>(readDismissed);
 
   useEffect(() => {
     if (!profile) return;
@@ -61,12 +77,25 @@ export default function Dashboard() {
     Promise.all([
       supabase.from("courses").select("id, title, slug, thumbnail_url, lessons(id)").order("title"),
       supabase.from("lesson_progress").select("lesson_id, completed, updated_at").eq("user_id", profile.id),
-    ]).then(([c, p]) => {
+      // RLS only returns announcements for this student's enrolled, published courses.
+      supabase.from("announcements").select("id, title, body, created_at, courses(title)").order("created_at", { ascending: false }).limit(10),
+    ]).then(([c, p, a]) => {
+      setAnnouncements(((a.data ?? []) as unknown as Announcement[]).filter((x) => x.courses));
       if (c.error) return setLoadError(true);
       setCourses((c.data as Course[] | null) ?? []);
       setRows((p.data as Row[] | null) ?? []);
     });
   }, [profile]);
+
+  function dismiss(id: string) {
+    const next = [...dismissed, id];
+    setDismissed(next);
+    try {
+      localStorage.setItem(DISMISSED_KEY, JSON.stringify(next.slice(-50)));
+    } catch {
+      // Not saved; the banner just comes back next visit.
+    }
+  }
 
   if (loadError) {
     return (
@@ -100,6 +129,9 @@ export default function Dashboard() {
   const latest = [...rows].sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0];
   const lastCourse = latest && courses.find((c) => c.lessons.some((l) => l.id === latest.lesson_id));
 
+  // New announcements show as a banner until closed; all of them stay on the Notice Board.
+  const fresh = announcements.filter((a) => Date.now() - new Date(a.created_at).getTime() < NEW_FOR_MS && !dismissed.includes(a.id)).slice(0, 3);
+
   const totalLessons = stats.reduce((n, s) => n + s.total, 0);
   const overall = totalLessons ? Math.round((completed.size / totalLessons) * 100) : 0;
 
@@ -126,6 +158,19 @@ export default function Dashboard() {
           </button>
         </div>
       )}
+
+      {fresh.map((a) => (
+        <div key={a.id} role="status" className="mt-3 flex items-start gap-3 rounded-2xl bg-primary px-5 py-3.5 text-sm text-primary-foreground">
+          <Megaphone className="mt-0.5 size-4 shrink-0" />
+          <p className="flex-1">
+            <strong>{a.courses?.title}:</strong> {a.title}
+            {a.body && <span className="mt-0.5 block whitespace-pre-line opacity-90">{a.body}</span>}
+          </p>
+          <button type="button" onClick={() => dismiss(a.id)} aria-label="Dismiss announcement" className="rounded-full p-0.5 hover:bg-background/20">
+            <X className="size-4" />
+          </button>
+        </div>
+      ))}
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div className="space-y-5">
@@ -207,6 +252,24 @@ export default function Dashboard() {
                 <p className="mt-1 text-xs text-muted-foreground">Overall</p>
               </div>
             </div>
+          </Panel>
+
+          <Panel title="Notice Board">
+            {announcements.length === 0 ? (
+              <p className="px-2 py-4 text-center text-sm text-muted-foreground">No announcements right now.</p>
+            ) : (
+              <ul className="max-h-80 space-y-2 overflow-y-auto">
+                {announcements.slice(0, 5).map((a) => (
+                  <li key={a.id} className="rounded-xl bg-muted/60 px-3 py-2.5">
+                    <p className="text-sm font-medium">{a.title}</p>
+                    {a.body && <p className="mt-0.5 line-clamp-3 whitespace-pre-line text-sm text-foreground/80">{a.body}</p>}
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {a.courses?.title} · {new Date(a.created_at).toLocaleDateString()}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
           </Panel>
 
           <Panel title="My Activities">

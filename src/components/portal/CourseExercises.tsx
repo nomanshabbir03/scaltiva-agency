@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ClipboardList, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { formatDue, type Exercise } from "@/lib/exercises";
-import { card, input, label, primaryButton, secondaryButton } from "@/components/portal/form";
+import { input, label, primaryButton, secondaryButton } from "@/components/portal/form";
 import Notice, { type Message } from "@/components/portal/Notice";
 import { useToast } from "@/components/portal/Toast";
 
@@ -85,7 +85,7 @@ function ExerciseForm({ courseId, exercise, onSaved, onCancel }: {
 
 const iconButton = "grid size-9 place-items-center rounded-full border transition hover:border-primary hover:text-primary";
 
-// "Exercises" section on the admin course page.
+// Body of the "Exercises" section on the admin course page.
 export default function CourseExercises({ courseId }: { courseId: string }) {
   const toast = useToast();
   const [rows, setRows] = useState<Row[] | null>(null);
@@ -119,8 +119,7 @@ export default function CourseExercises({ courseId }: { courseId: string }) {
   }
 
   return (
-    <section className={`${card} mt-6`}>
-      <h2 className="text-xl font-semibold">Exercises</h2>
+    <div>
 
       {!rows ? (
         <div className="grid place-items-center py-10" role="status" aria-label="Loading">
@@ -166,6 +165,6 @@ export default function CourseExercises({ courseId }: { courseId: string }) {
           </div>
         </>
       )}
-    </section>
+    </div>
   );
 }

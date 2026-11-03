@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ChevronDown, ExternalLink, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
@@ -61,7 +61,9 @@ export default function ExerciseDetail() {
   const [exercise, setExercise] = useState<(Exercise & { courses: { title: string } | null }) | null | undefined>(undefined);
   const [students, setStudents] = useState<Student[]>([]);
   const [submissions, setSubmissions] = useState<Record<string, Submission>>({});
-  const [open, setOpen] = useState<string | null>(null);
+  // Arriving from the review queue opens that student's submission straight away.
+  const [searchParams] = useSearchParams();
+  const [open, setOpen] = useState<string | null>(searchParams.get("student"));
 
   useEffect(() => {
     supabase

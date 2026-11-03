@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowDown, ArrowLeft, ArrowUp, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { card, primaryButton } from "@/components/portal/form";
+import { primaryButton } from "@/components/portal/form";
 import { useToast } from "@/components/portal/Toast";
 import CourseForm, { type Course } from "@/components/portal/CourseForm";
 import LessonForm, { type Lesson } from "@/components/portal/LessonForm";
 import CourseStudents from "@/components/portal/CourseStudents";
 import CourseExercises from "@/components/portal/CourseExercises";
+import Collapsible from "@/components/portal/Collapsible";
+import CourseAnnouncements from "@/components/portal/CourseAnnouncements";
 import { PublishedBadge } from "@/pages/admin/Courses";
 
 const iconButton =
@@ -90,13 +92,7 @@ export default function CourseDetail() {
         <PublishedBadge published={course.is_published} />
       </div>
 
-      <div className="mt-8">
-        <CourseForm key={course.id} course={course} onSaved={setCourse} />
-      </div>
-
-      <section className={`${card} mt-6`}>
-        <h2 className="text-xl font-semibold">Lessons</h2>
-
+      <Collapsible title="Lessons" meta={`${lessons.length} lesson${lessons.length === 1 ? "" : "s"}`}>
         {lessons.length === 0 && editing !== "new" && <p className="mt-3 text-muted-foreground">No lessons yet. Add the first one.</p>}
 
         <ol className="mt-4 space-y-3">
@@ -151,10 +147,20 @@ export default function CourseDetail() {
             </button>
           )}
         </div>
-      </section>
+      </Collapsible>
 
-      <CourseExercises courseId={course.id} />
-      <CourseStudents courseId={course.id} />
+      <Collapsible title="Announcements">
+        <CourseAnnouncements courseId={course.id} />
+      </Collapsible>
+      <Collapsible title="Exercises">
+        <CourseExercises courseId={course.id} />
+      </Collapsible>
+      <Collapsible title="Enrolled students">
+        <CourseStudents courseId={course.id} />
+      </Collapsible>
+      <Collapsible title="Course details">
+        <CourseForm key={course.id} course={course} onSaved={setCourse} bare />
+      </Collapsible>
     </div>
   );
 }
