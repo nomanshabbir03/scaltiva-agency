@@ -5,6 +5,10 @@ import { supabase } from "@/lib/supabase";
 import { homeFor, useAuth } from "@/lib/auth";
 import { PageLoader } from "@/components/portal/RequireRole";
 import { input, label, primaryButton } from "@/components/portal/form";
+import { cn } from "@/lib/utils";
+
+// Square fields on the login page.
+const field = cn(input, "rounded-none");
 
 // After this many wrong passwords in a row, the form pauses for a minute.
 // Supabase also rate-limits sign-ins on the server; this just gives a clear message sooner.
@@ -79,11 +83,11 @@ export default function Login() {
           <form onSubmit={onSubmit} className="mt-8 space-y-5">
             <div>
               <label htmlFor="email" className={label}>Email</label>
-              <input id="email" name="email" type="email" required autoComplete="email" className={input} />
+              <input id="email" name="email" type="email" required autoComplete="email" className={field} />
             </div>
             <div>
               <label htmlFor="password" className={label}>Password</label>
-              <input id="password" name="password" type="password" required autoComplete="current-password" className={input} />
+              <input id="password" name="password" type="password" required autoComplete="current-password" className={field} />
             </div>
 
             {message && (
