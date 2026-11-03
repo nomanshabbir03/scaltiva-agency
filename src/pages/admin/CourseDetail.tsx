@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowDown, ArrowLeft, ArrowUp, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowUp, Award, ClipboardList, ListChecks, Loader2, Megaphone, Pencil, PlayCircle, Plus, Settings, Trash2, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { primaryButton } from "@/components/portal/form";
 import { useToast } from "@/components/portal/Toast";
@@ -8,7 +8,7 @@ import CourseForm, { type Course } from "@/components/portal/CourseForm";
 import LessonForm, { type Lesson } from "@/components/portal/LessonForm";
 import CourseStudents from "@/components/portal/CourseStudents";
 import CourseExercises from "@/components/portal/CourseExercises";
-import Collapsible from "@/components/portal/Collapsible";
+import SectionCard from "@/components/portal/SectionCard";
 import CourseAnnouncements from "@/components/portal/CourseAnnouncements";
 import CourseQuizzes from "@/components/portal/CourseQuizzes";
 import CourseCertificates from "@/components/portal/CourseCertificates";
@@ -23,6 +23,8 @@ export default function CourseDetail() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   // Which lesson form is open: a lesson id, "new", or none.
   const [editing, setEditing] = useState<string | null>(null);
+  // Which lesson's video is playing inline in the Lessons window.
+  const [watching, setWatching] = useState<string | null>(null);
   const toast = useToast();
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export default function CourseDetail() {
   const nextPosition = lessons.length ? Math.max(...lessons.map((l) => l.position)) + 1 : 0;
 
   return (
-    <div className="max-w-4xl">
+    <div className="max-w-5xl">
       <title>{`${course.title} | Scaltiva admin`}</title>
       {back}
       <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -94,7 +96,8 @@ export default function CourseDetail() {
         <PublishedBadge published={course.is_published} />
       </div>
 
-      <Collapsible title="Lessons" meta={`${lessons.length} lesson${lessons.length === 1 ? "" : "s"}`}>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      <SectionCard title="Lessons" icon={PlayCircle} description="Watch, add, edit and reorder the videos." meta={`${lessons.length} lesson${lessons.length === 1 ? "" : "s"}`}>
         {lessons.length === 0 && editing !== "new" && <p className="mt-3 text-muted-foreground">No lessons yet. Add the first one.</p>}
 
         <ol className="mt-4 space-y-3">
@@ -104,7 +107,19 @@ export default function CourseDetail() {
                 <LessonForm courseId={course.id} lesson={lesson} position={lesson.position} onSaved={onLessonSaved} onCancel={() => setEditing(null)} />
               </li>
             ) : (
-              <li key={lesson.id} className="flex items-center gap-3 border px-4 py-3">
+              <li key={lesson.id} className="border">
+              <div className="flex items-center gap-3 px-3 py-3 sm:px-4">
+                <button
+                  type="button"
+                  onClick={() => setWatching(watching === lesson.id ? null : lesson.id)}
+                  aria-label={`${watching === lesson.id ? "Stop" : "Watch"} "${lesson.title}"`}
+                  className="relative hidden w-28 shrink-0 sm:block"
+                >
+                  <img src={`https://i.ytimg.com/vi/${lesson.youtube_video_id}/mqdefault.jpg`} alt="" className="aspect-video w-full object-cover" loading="lazy" />
+                  <span className="absolute inset-0 grid place-items-center bg-black/30 text-white transition hover:bg-black/40">
+                    <PlayCircle className="size-7" />
+                  </span>
+                </button>
                 <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-sm font-semibold text-accent-foreground">
                   {i + 1}
                 </span>
@@ -134,6 +149,18 @@ export default function CourseDetail() {
                     <Trash2 className="size-4" />
                   </button>
                 </div>
+              </div>
+              {watching === lesson.id && (
+                <div className="aspect-video bg-black">
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${lesson.youtube_video_id}?rel=0&modestbranding=1&autoplay=1`}
+                    title={lesson.title}
+                    className="size-full"
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              )}
               </li>
             ),
           )}
@@ -149,26 +176,27 @@ export default function CourseDetail() {
             </button>
           )}
         </div>
-      </Collapsible>
+      </SectionCard>
 
-      <Collapsible title="Announcements">
+      <SectionCard title="Announcements" icon={Megaphone} description="Post updates to enrolled students.">
         <CourseAnnouncements courseId={course.id} />
-      </Collapsible>
-      <Collapsible title="Exercises">
+      </SectionCard>
+      <SectionCard title="Exercises" icon={ClipboardList} description="Set work and mark submissions.">
         <CourseExercises courseId={course.id} />
-      </Collapsible>
-      <Collapsible title="Quizzes">
+      </SectionCard>
+      <SectionCard title="Quizzes" icon={ListChecks} description="Upload MCQs and see results.">
         <CourseQuizzes courseId={course.id} />
-      </Collapsible>
-      <Collapsible title="Enrolled students">
+      </SectionCard>
+      <SectionCard title="Enrolled students" icon={Users} description="Enroll, remove and track progress.">
         <CourseStudents courseId={course.id} courseTitle={course.title} />
-      </Collapsible>
-      <Collapsible title="Certificates">
+      </SectionCard>
+      <SectionCard title="Certificates" icon={Award} description="Upload completion certificates in bulk.">
         <CourseCertificates courseId={course.id} />
-      </Collapsible>
-      <Collapsible title="Course details">
+      </SectionCard>
+      <SectionCard title="Course details" icon={Settings} description="Title, address, description and publishing.">
         <CourseForm key={course.id} course={course} onSaved={setCourse} bare />
-      </Collapsible>
+      </SectionCard>
+      </div>
     </div>
   );
 }
