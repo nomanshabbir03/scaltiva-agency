@@ -30,7 +30,7 @@ export default function CourseStudents({ courseId }: { courseId: string }) {
       supabase.from("profiles").select("id, full_name, email").eq("role", "student").eq("is_active", true).order("full_name"),
       supabase.from("lessons").select("id, lesson_progress(user_id)").eq("course_id", courseId).eq("lesson_progress.completed", true),
     ]).then(([e, s, l]) => {
-      setEnrollments((e.data as Enrollment[] | null) ?? []);
+      setEnrollments((e.data as unknown as Enrollment[] | null) ?? []);
       setStudents((s.data ?? []).map((p) => ({ id: p.id, title: p.full_name, subtitle: p.email })));
       // Completed lessons per student, out of the course's lessons.
       const lessons = (l.data ?? []) as { lesson_progress: { user_id: string }[] }[];
@@ -47,7 +47,7 @@ export default function CourseStudents({ courseId }: { courseId: string }) {
       .upsert(ids.map((user_id) => ({ user_id, course_id: courseId })), { onConflict: "user_id,course_id", ignoreDuplicates: true })
       .select(SELECT);
     if (error) return toast("Couldn't enroll the students. Please try again.", "error");
-    setEnrollments((list) => [...((data as Enrollment[] | null) ?? []), ...(list ?? [])]);
+    setEnrollments((list) => [...((data as unknown as Enrollment[] | null) ?? []), ...(list ?? [])]);
     setPicking(false);
     toast(`Enrolled ${ids.length} student${ids.length === 1 ? "" : "s"}.`);
   }

@@ -28,7 +28,7 @@ export default function StudentCourses({ studentId }: { studentId: string }) {
       supabase.from("enrollments").select(SELECT).eq("user_id", studentId).order("enrolled_at", { ascending: false }),
       supabase.from("courses").select("id, title, is_published").order("title"),
     ]).then(([e, c]) => {
-      setEnrollments((e.data as Enrollment[] | null) ?? []);
+      setEnrollments((e.data as unknown as Enrollment[] | null) ?? []);
       setCourses((c.data ?? []).map((x) => ({ id: x.id, title: x.title, subtitle: x.is_published ? undefined : "Draft" })));
     });
   }, [studentId]);
@@ -39,7 +39,7 @@ export default function StudentCourses({ studentId }: { studentId: string }) {
       .upsert(ids.map((course_id) => ({ user_id: studentId, course_id })), { onConflict: "user_id,course_id", ignoreDuplicates: true })
       .select(SELECT);
     if (error) return toast("Couldn't enroll in the courses. Please try again.", "error");
-    setEnrollments((list) => [...((data as Enrollment[] | null) ?? []), ...(list ?? [])]);
+    setEnrollments((list) => [...((data as unknown as Enrollment[] | null) ?? []), ...(list ?? [])]);
     setPicking(false);
     toast(`Enrolled in ${ids.length} course${ids.length === 1 ? "" : "s"}.`);
   }
