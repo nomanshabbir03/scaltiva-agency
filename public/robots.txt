@@ -1,6 +1,9 @@
 # Search engines and AI crawlers are welcome. Update the sitemap URL to the real domain.
 User-agent: *
 Allow: /
+Disallow: /login
+Disallow: /portal
+Disallow: /admin
 
 User-agent: GPTBot
 Allow: /

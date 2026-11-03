@@ -1,5 +1,4 @@
-import { connectDB } from './_lib/db.js'
-import Contact from './_lib/Contact.js'
+import { supabaseAdmin } from './_lib/supabase.js'
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const SERVICES = ['development', 'automation', 'seo', 'marketing', 'other']
@@ -48,8 +47,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    await connectDB()
-    await Contact.create({ name, email, service, message })
+    const { error } = await supabaseAdmin()
+      .from('contact_messages')
+      .insert({ name, email: email.toLowerCase(), service, message })
+    if (error) throw error
     return res.status(201).json({ ok: true })
   } catch (err) {
     console.error('Contact form error:', err)

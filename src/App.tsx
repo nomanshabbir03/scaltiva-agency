@@ -10,6 +10,20 @@ import WorkPage from "@/pages/WorkPage";
 import HowItWorksPage from "@/pages/HowItWorksPage";
 import Contact from "@/pages/Contact";
 import NotFound from "@/pages/NotFound";
+import Login from "@/pages/Login";
+import Dashboard from "@/pages/portal/Dashboard";
+import Account from "@/pages/portal/Account";
+import CoursePage from "@/pages/portal/CoursePage";
+import AdminOverview from "@/pages/admin/Overview";
+import Students from "@/pages/admin/Students";
+import NewStudent from "@/pages/admin/NewStudent";
+import StudentDetail from "@/pages/admin/StudentDetail";
+import Courses from "@/pages/admin/Courses";
+import NewCourse from "@/pages/admin/NewCourse";
+import CourseDetail from "@/pages/admin/CourseDetail";
+import AdminLayout from "@/components/portal/AdminLayout";
+import RequireRole from "@/components/portal/RequireRole";
+import PortalLayout from "@/components/portal/PortalLayout";
 
 // Router doesn't scroll on navigation: jump to the #section if there is one, otherwise to the top.
 function ScrollManager() {
@@ -46,6 +60,27 @@ function Layout() {
 export default function App() {
   return (
     <Routes>
+      {/* Student portal and admin: no marketing navbar, footer or chatbot. */}
+      <Route path="login" element={<Login />} />
+      <Route path="portal" element={<RequireRole role="student" />}>
+        <Route element={<PortalLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="courses/:slug" element={<CoursePage />} />
+          <Route path="account" element={<Account />} />
+        </Route>
+      </Route>
+      <Route path="admin" element={<RequireRole role="admin" />}>
+        <Route element={<AdminLayout />}>
+          <Route index element={<AdminOverview />} />
+          <Route path="students" element={<Students />} />
+          <Route path="students/new" element={<NewStudent />} />
+          <Route path="students/:id" element={<StudentDetail />} />
+          <Route path="courses" element={<Courses />} />
+          <Route path="courses/new" element={<NewCourse />} />
+          <Route path="courses/:id" element={<CourseDetail />} />
+        </Route>
+      </Route>
+
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />

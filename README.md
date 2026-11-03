@@ -1,13 +1,13 @@
 # Scaltiva website
 
 Marketing site for Scaltiva (web development, automation, SEO and marketing).
-One project: a React + Vite + Tailwind CSS front end, plus a serverless function in `api/` for the contact form (MongoDB).
+One project: a React + Vite + Tailwind CSS front end, plus a serverless function in `api/` for the contact form (Supabase).
 
 ## Run locally
 
 ```bash
 npm install
-cp .env.example .env     # then set MONGO_URI (local MongoDB or Atlas)
+cp .env.example .env     # then set the Supabase values
 npm run dev              # site + API on http://localhost:5173
 ```
 
@@ -16,7 +16,7 @@ npm run dev              # site + API on http://localhost:5173
 ## Deploy (Vercel)
 
 1. Import the repository in Vercel. It detects Vite automatically; no build settings needed.
-2. Add the environment variable `MONGO_URI` (use a MongoDB Atlas connection string).
+2. Add the environment variables from `.env.example` (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`).
 3. Deploy. `vercel.json` makes every page route work on refresh, and `api/` is served as functions.
 
 ## Structure
