@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { adminApi } from "@/lib/adminApi";
+import { lastActivity, lastLogins, timeAgo } from "@/lib/activity";
 import { card, input, label, primaryButton } from "@/components/portal/form";
 import Notice, { type Message } from "@/components/portal/Notice";
 import StudentCourses from "@/components/portal/StudentCourses";
@@ -25,6 +26,7 @@ export default function StudentDetail() {
   const [saveMsg, setSaveMsg] = useState<Message>(null);
   const [resetting, setResetting] = useState(false);
   const [resetMsg, setResetMsg] = useState<Message>(null);
+  const [seen, setSeen] = useState<{ login?: string | null; activity?: string }>({});
 
   useEffect(() => {
     supabase
@@ -34,6 +36,7 @@ export default function StudentDetail() {
       .eq("role", "student")
       .maybeSingle()
       .then(({ data }) => setStudent(data as Student | null));
+    Promise.all([lastLogins(), lastActivity(id)]).then(([logins, activity]) => setSeen({ login: logins[id], activity: activity[id] }));
   }, [id]);
 
   async function onSave(e: FormEvent<HTMLFormElement>) {
@@ -103,6 +106,10 @@ export default function StudentDetail() {
       </div>
       <p className="mt-2 text-muted-foreground">
         {student.email} · added {new Date(student.created_at).toLocaleDateString()}
+      </p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Last login: <span className="font-medium text-foreground">{timeAgo(seen.login)}</span> · Last lesson activity:{" "}
+        <span className="font-medium text-foreground">{timeAgo(seen.activity)}</span>
       </p>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">

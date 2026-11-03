@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, UserPlus, X } from "lucide-react";
+import { Download, Loader2, UserPlus, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { primaryButton } from "@/components/portal/form";
+import { primaryButton, secondaryButton } from "@/components/portal/form";
+import { downloadCsv, fileName } from "@/lib/csv";
 import { useToast } from "@/components/portal/Toast";
 import EnrollPicker, { type Option } from "@/components/portal/EnrollPicker";
 
@@ -16,7 +17,7 @@ type Enrollment = {
 const SELECT = "id, enrolled_at, user_id, profiles(full_name, email)";
 
 // Body of the "Enrolled students" section on the admin course page.
-export default function CourseStudents({ courseId }: { courseId: string }) {
+export default function CourseStudents({ courseId, courseTitle }: { courseId: string; courseTitle: string }) {
   const [enrollments, setEnrollments] = useState<Enrollment[] | null>(null);
   const [students, setStudents] = useState<Option[]>([]);
   const [completed, setCompleted] = useState<Record<string, number>>({});
@@ -61,6 +62,18 @@ export default function CourseStudents({ courseId }: { courseId: string }) {
   }
 
   const enrolledIds = new Set(enrollments?.map((e) => e.user_id));
+
+  function exportStudents() {
+    if (!enrollments) return;
+    downloadCsv(
+      `${fileName(courseTitle)}-students`,
+      ["Name", "Email", "Enrolled", "Lessons completed", "Total lessons", "Progress %"],
+      enrollments.map((e) => {
+        const done = completed[e.user_id] ?? 0;
+        return [e.profiles?.full_name, e.profiles?.email, new Date(e.enrolled_at).toLocaleDateString(), done, lessonCount, lessonCount ? Math.round((done / lessonCount) * 100) : 0];
+      }),
+    );
+  }
 
   return (
     <div>
@@ -116,7 +129,7 @@ export default function CourseStudents({ courseId }: { courseId: string }) {
         </div>
       )}
 
-      <div className="mt-4">
+      <div className="mt-4 flex flex-wrap gap-3">
         {picking ? (
           <EnrollPicker
             options={students.filter((s) => !enrolledIds.has(s.id))}
@@ -128,6 +141,12 @@ export default function CourseStudents({ courseId }: { courseId: string }) {
           <button type="button" onClick={() => setPicking(true)} disabled={!enrollments} className={primaryButton}>
             <UserPlus className="size-4" />
             Enroll students
+          </button>
+        )}
+        {!picking && !!enrollments?.length && (
+          <button type="button" onClick={exportStudents} className={secondaryButton}>
+            <Download className="size-4" />
+            Export with progress
           </button>
         )}
       </div>

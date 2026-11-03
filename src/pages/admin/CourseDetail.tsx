@@ -156,7 +156,7 @@ export default function CourseDetail() {
         <CourseExercises courseId={course.id} />
       </Collapsible>
       <Collapsible title="Enrolled students">
-        <CourseStudents courseId={course.id} />
+        <CourseStudents courseId={course.id} courseTitle={course.title} />
       </Collapsible>
       <Collapsible title="Course details">
         <CourseForm key={course.id} course={course} onSaved={setCourse} bare />

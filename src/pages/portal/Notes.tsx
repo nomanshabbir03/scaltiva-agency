@@ -5,26 +5,16 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { primaryButton, secondaryButton } from "@/components/portal/form";
 import { useToast } from "@/components/portal/Toast";
+import { downloadCsv } from "@/lib/csv";
 
 export type Note = { id: string; title: string; body: string; created_at: string; updated_at: string };
 
-const cell = (value: string) => `"${value.replace(/"/g, '""')}"`;
-
-// CSV opens straight in Excel; the BOM makes Excel read Urdu and other non-English text correctly.
 function exportCsv(notes: Note[]) {
-  const lines = [
-    ["Title", "Note", "Created", "Last updated"].map(cell).join(","),
-    ...notes.map((n) =>
-      [n.title, n.body, new Date(n.created_at).toLocaleString(), new Date(n.updated_at).toLocaleString()].map(cell).join(","),
-    ),
-  ];
-  const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `my-notes-${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+  downloadCsv(
+    "my-notes",
+    ["Title", "Note", "Created", "Last updated"],
+    notes.map((n) => [n.title, n.body, new Date(n.created_at).toLocaleString(), new Date(n.updated_at).toLocaleString()]),
+  );
 }
 
 export default function Notes() {

@@ -18,6 +18,7 @@ function cleanPassword(value) {
 //   { action: 'create', fullName, email, password }
 //   { action: 'update', id, fullName, isActive }
 //   { action: 'reset-password', id, password }
+//   { action: 'last-logins' }
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
@@ -53,6 +54,18 @@ export default async function handler(req, res) {
         throw profileError
       }
       return res.status(201).json({ id: data.user.id })
+    }
+
+    if (body.action === 'last-logins') {
+      // { userId: lastSignInAt } for every user, read in pages of 1000.
+      const logins = {}
+      for (let page = 1; ; page++) {
+        const { data, error } = await admin.auth.admin.listUsers({ page, perPage: 1000 })
+        if (error) throw error
+        data.users.forEach((u) => (logins[u.id] = u.last_sign_in_at ?? null))
+        if (data.users.length < 1000) break
+      }
+      return res.status(200).json({ logins })
     }
 
     const id = String(body.id ?? '')

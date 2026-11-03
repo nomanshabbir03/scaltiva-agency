@@ -1,10 +1,11 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import { ArrowLeft, ChevronDown, ExternalLink, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronDown, Download, ExternalLink, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { STATUS_CLASS, STATUS_LABEL, exerciseStatus, formatDue, type Exercise, type Submission } from "@/lib/exercises";
-import { card, input, label, primaryButton } from "@/components/portal/form";
+import { card, input, label, primaryButton, secondaryButton } from "@/components/portal/form";
+import { downloadCsv, fileName } from "@/lib/csv";
 import { useToast } from "@/components/portal/Toast";
 
 type Student = { user_id: string; profiles: { full_name: string; email: string } | null };
@@ -107,6 +108,26 @@ export default function ExerciseDetail() {
 
   const submittedCount = Object.keys(submissions).length;
 
+  function exportMarks() {
+    downloadCsv(
+      `${fileName(exercise!.title)}-marks`,
+      ["Name", "Email", "Status", "Submitted", "Marks", "Out of", "Feedback", "Link"],
+      students.map((st) => {
+        const sub = submissions[st.user_id];
+        return [
+          st.profiles?.full_name,
+          st.profiles?.email,
+          STATUS_LABEL[exerciseStatus(exercise!, sub)],
+          sub ? new Date(sub.submitted_at).toLocaleString() : "",
+          sub?.marks ?? "",
+          exercise!.max_marks ?? "",
+          sub?.feedback ?? "",
+          sub?.link ?? "",
+        ];
+      }),
+    );
+  }
+
   return (
     <div className="max-w-4xl">
       <title>{`${exercise.title} | Scaltiva admin`}</title>
@@ -122,7 +143,15 @@ export default function ExerciseDetail() {
       {exercise.instructions && <p className={`${card} mt-6 whitespace-pre-line`}>{exercise.instructions}</p>}
 
       <section className={`${card} mt-6`}>
-        <h2 className="text-xl font-semibold">Submissions</h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-semibold">Submissions</h2>
+          {students.length > 0 && (
+            <button type="button" onClick={exportMarks} className={secondaryButton}>
+              <Download className="size-4" />
+              Export marks
+            </button>
+          )}
+        </div>
         {students.length === 0 ? (
           <p className="mt-3 text-muted-foreground">No students are enrolled in this course yet.</p>
         ) : (
