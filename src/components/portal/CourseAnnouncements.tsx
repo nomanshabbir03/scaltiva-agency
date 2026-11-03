@@ -50,7 +50,7 @@ export default function CourseAnnouncements({ courseId }: { courseId: string }) 
 
   return (
     <div>
-      <form onSubmit={onSubmit} className="mt-4 space-y-4 rounded-3xl border bg-muted/50 p-4 sm:p-6">
+      <form onSubmit={onSubmit} className="mt-4 space-y-4 border bg-muted/50 p-4 sm:p-6">
         <p className="text-sm text-muted-foreground">Only students enrolled in this course will see it, on their home page.</p>
         <div>
           <label htmlFor="announcement-title" className={label}>Title</label>
@@ -58,7 +58,7 @@ export default function CourseAnnouncements({ courseId }: { courseId: string }) 
         </div>
         <div>
           <label htmlFor="announcement-body" className={label}>Message (optional)</label>
-          <textarea id="announcement-body" name="body" rows={3} maxLength={2000} className={`${input} resize-y rounded-3xl`} />
+          <textarea id="announcement-body" name="body" rows={3} maxLength={2000} className={`${input} resize-y `} />
         </div>
         <button type="submit" disabled={posting} className={primaryButton}>
           {posting ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
@@ -75,7 +75,7 @@ export default function CourseAnnouncements({ courseId }: { courseId: string }) 
       ) : (
         <ul className="mt-4 space-y-3">
           {rows.map((a) => (
-            <li key={a.id} className="flex items-start gap-3 rounded-2xl border px-4 py-3">
+            <li key={a.id} className="flex items-start gap-3 border px-4 py-3">
               <Megaphone className="mt-0.5 size-5 shrink-0 text-primary" />
               <div className="min-w-0 flex-1">
                 <p className="font-medium">{a.title}</p>

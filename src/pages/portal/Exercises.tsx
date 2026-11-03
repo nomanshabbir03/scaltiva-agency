@@ -43,14 +43,14 @@ export default function Exercises() {
       <h1 className="text-2xl font-semibold">Exercises</h1>
 
       {rows.length === 0 ? (
-        <div className="mt-5 rounded-2xl bg-background py-16 text-center shadow-sm">
+        <div className="mt-5 bg-background py-16 text-center shadow-sm">
           <ClipboardList className="mx-auto size-12 text-primary" />
           <h2 className="mt-4 text-xl font-semibold">No exercises yet</h2>
           <p className="mt-2 text-muted-foreground">When Scaltiva adds exercises to your courses, they will show up here.</p>
         </div>
       ) : (
         [...groups].map(([course, list]) => (
-          <section key={course} className="mt-5 overflow-hidden rounded-2xl bg-background shadow-sm">
+          <section key={course} className="mt-5 overflow-hidden bg-background shadow-sm">
             <h2 className="bg-primary px-5 py-3.5 text-lg font-semibold text-primary-foreground">{course}</h2>
             <ul className="divide-y">
               {list.map((x) => {

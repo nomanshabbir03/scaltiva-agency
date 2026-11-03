@@ -95,7 +95,7 @@ export function LineChart({ labels, series, caption }: { labels: string[]; serie
         </svg>
         {hover !== null && (
           <div
-            className="pointer-events-none absolute top-0 z-10 rounded-xl border bg-background px-3 py-2 text-xs shadow-lg"
+            className="pointer-events-none absolute top-0 z-10 border bg-background px-3 py-2 text-xs shadow-lg"
             style={{ left: `${(x(hover) / W) * 100}%`, transform: `translateX(${hover > n / 2 ? "-105%" : "5%"})` }}
           >
             <p className="font-semibold">{labels[hover]}</p>

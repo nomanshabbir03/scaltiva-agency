@@ -51,13 +51,13 @@ export default function Notes() {
       <h1 className="text-2xl font-semibold">My Notes</h1>
       <p className="mt-1 text-sm text-muted-foreground">Only you can see your notes.</p>
 
-      <div className="mt-5 rounded-2xl bg-background p-4 shadow-sm sm:p-6">
+      <div className="mt-5 bg-background p-4 shadow-sm sm:p-6">
         {!notes ? (
           <div className="grid place-items-center py-16" role="status" aria-label="Loading">
             <Loader2 className="size-6 animate-spin text-primary" />
           </div>
         ) : notes.length === 0 ? (
-          <div className="rounded-xl bg-muted/60 py-12 text-center">
+          <div className="bg-muted/60 py-12 text-center">
             <NotebookPen className="mx-auto size-10 text-primary" />
             <p className="mt-3 text-lg">No notes yet.</p>
             <p className="mt-1 text-sm text-muted-foreground">Jot down key points from your lessons so you can revise later.</p>
@@ -65,7 +65,7 @@ export default function Notes() {
         ) : (
           <ul className="space-y-3">
             {notes.map((n) => (
-              <li key={n.id} className="flex items-start gap-3 rounded-2xl border px-4 py-3">
+              <li key={n.id} className="flex items-start gap-3 border px-4 py-3">
                 <Link to={`${base}/${n.id}`} className="min-w-0 flex-1 hover:text-primary">
                   <p className="truncate font-medium">{n.title}</p>
                   {n.body && <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">{n.body}</p>}

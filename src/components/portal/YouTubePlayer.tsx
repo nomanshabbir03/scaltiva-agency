@@ -126,5 +126,5 @@ export default function YouTubePlayer({ videoId, start, completed, onSave }: Pro
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoId]);
 
-  return <div ref={wrapper} className="aspect-video overflow-hidden rounded-2xl bg-black shadow-xl shadow-primary/5 [&_iframe]:size-full" />;
+  return <div ref={wrapper} className="aspect-video overflow-hidden bg-black shadow-xl shadow-primary/5 [&_iframe]:size-full" />;
 }

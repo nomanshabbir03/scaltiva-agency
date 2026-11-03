@@ -73,7 +73,7 @@ export default function LessonForm({ courseId, lesson, position, onSaved, onCanc
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 rounded-3xl border bg-muted/50 p-4 sm:p-6">
+    <form onSubmit={onSubmit} className="space-y-4 border bg-muted/50 p-4 sm:p-6">
       <div>
         <label htmlFor={`${prefix}-title`} className={label}>Lesson title</label>
         <input id={`${prefix}-title`} name="title" required maxLength={150} defaultValue={lesson?.title} className={input} />
@@ -97,7 +97,7 @@ export default function LessonForm({ courseId, lesson, position, onSaved, onCanc
           rows={3}
           maxLength={2000}
           defaultValue={lesson?.description ?? ""}
-          className={`${input} resize-y rounded-3xl`}
+          className={`${input} resize-y `}
         />
       </div>
       <div className="max-w-48">

@@ -25,8 +25,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed.' })
   }
 
-  const admin = await requireAdmin(req, res)
-  if (!admin) return
+  const ctx = await requireAdmin(req, res)
+  if (!ctx) return
+  const { admin, userId } = ctx
+  // Changes made here use the secret key, so log them for the activity log by hand.
+  const log = (action, details) => admin.from('admin_activity').insert({ actor_id: userId, action, entity: 'students', details })
 
   const body = req.body ?? {}
 
@@ -53,6 +56,7 @@ export default async function handler(req, res) {
         await admin.auth.admin.deleteUser(data.user.id)
         throw profileError
       }
+      await log('insert', `${fullName} (${email})`)
       return res.status(201).json({ id: data.user.id })
     }
 
@@ -82,6 +86,7 @@ export default async function handler(req, res) {
       // Banning stops the login from refreshing; RLS already blocks a disabled profile's data.
       const { error: banError } = await admin.auth.admin.updateUserById(id, { ban_duration: isActive ? 'none' : BAN })
       if (banError) throw banError
+      await log('update', `${fullName} (${isActive ? 'active' : 'disabled'})`)
       return res.status(200).json({ ok: true })
     }
 
@@ -90,6 +95,8 @@ export default async function handler(req, res) {
       if (!password) return res.status(400).json({ message: 'The password must be 8 to 72 characters.' })
       const { error } = await admin.auth.admin.updateUserById(id, { password })
       if (error) throw error
+      const { data: who } = await admin.from('profiles').select('full_name').eq('id', id).single()
+      await log('reset password', who?.full_name ?? id)
       return res.status(200).json({ ok: true })
     }
 

@@ -67,7 +67,7 @@ export default function CourseForm({ course, onSaved, bare }: { course?: Course;
       )}
       <div>
         <label htmlFor="description" className={label}>Description</label>
-        <textarea id="description" name="description" rows={4} maxLength={2000} defaultValue={course?.description ?? ""} className={`${input} resize-y rounded-3xl`} />
+        <textarea id="description" name="description" rows={4} maxLength={2000} defaultValue={course?.description ?? ""} className={`${input} resize-y `} />
       </div>
       <div>
         <label htmlFor="thumbnail" className={label}>Thumbnail image link (optional)</label>

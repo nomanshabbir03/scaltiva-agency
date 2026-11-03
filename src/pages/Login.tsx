@@ -72,7 +72,7 @@ export default function Login() {
           <span className="text-2xl font-light uppercase tracking-[0.2em]">Scaltiva</span>
         </Link>
 
-        <div className="mt-8 rounded-[2rem] bg-background p-6 shadow-xl shadow-primary/5 sm:p-10">
+        <div className="mt-8 bg-background p-6 shadow-xl shadow-primary/5 sm:p-10">
           <h1 className="text-3xl font-semibold">Welcome back</h1>
           <p className="mt-2 text-muted-foreground">Sign in with the details Scaltiva sent you.</p>
 
@@ -87,7 +87,7 @@ export default function Login() {
             </div>
 
             {message && (
-              <p role="alert" className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              <p role="alert" className="bg-red-50 px-4 py-3 text-sm text-red-700">
                 {message}
               </p>
             )}

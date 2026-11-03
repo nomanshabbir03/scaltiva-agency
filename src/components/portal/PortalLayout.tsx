@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import { ClipboardList, Globe, Home, KeyRound, LogOut, Menu, NotebookPen, TrendingUp, UserRound, X } from "lucide-react";
+import { Award, ClipboardList, ListChecks, Globe, Home, KeyRound, LogOut, Menu, NotebookPen, TrendingUp, UserRound, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import Avatar from "@/components/portal/Avatar";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,8 @@ const LINKS = [
   { to: "/portal", label: "Home", icon: Home, end: true },
   { to: "/portal/timeline", label: "Progress timeline", icon: TrendingUp, end: false },
   { to: "/portal/exercises", label: "Exercises", icon: ClipboardList, end: false },
+  { to: "/portal/quizzes", label: "Quizzes", icon: ListChecks, end: false },
+  { to: "/portal/certificates", label: "Certificates", icon: Award, end: false },
   { to: "/portal/notes", label: "My notes", icon: NotebookPen, end: false },
   { to: "/portal/profile", label: "My profile", icon: UserRound, end: false },
   { to: "/portal/account", label: "Password", icon: KeyRound, end: false },
@@ -32,7 +34,7 @@ const EXTERNAL = [
   { href: "/", label: "Scaltiva website", icon: Globe },
 ];
 
-const itemClass = "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition";
+const itemClass = "flex items-center gap-3 px-3 py-2.5 text-sm font-semibold transition";
 
 // Student area: top bar, a slim icon sidebar (labels when opened), then the page.
 export default function PortalLayout() {

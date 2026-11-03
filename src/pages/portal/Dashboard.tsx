@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { BarChart3, BookOpen, ClipboardList, CheckCircle2, KeyRound, Loader2, Megaphone, NotebookPen, PlayCircle, TrendingUp, UserRound, X } from "lucide-react";
+import { Award, BarChart3, ListChecks, BookOpen, ClipboardList, CheckCircle2, KeyRound, Loader2, Megaphone, NotebookPen, PlayCircle, TrendingUp, UserRound, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import Avatar from "@/components/portal/Avatar";
@@ -32,7 +32,7 @@ function readDismissed(): string[] {
 // Card with the orange header bar.
 function Panel({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
   return (
-    <section className="overflow-hidden rounded-2xl bg-background shadow-sm">
+    <section className="overflow-hidden bg-background shadow-sm">
       <div className="flex items-center justify-between gap-3 bg-primary px-5 py-3.5 text-primary-foreground">
         <h2 className="text-lg font-semibold">{title}</h2>
         {action}
@@ -45,7 +45,7 @@ function Panel({ title, action, children }: { title: string; action?: ReactNode;
 // Icon + label tile used in the right-hand panels.
 function Tile({ icon: Icon, label, to }: { icon: typeof BookOpen; label: string; to: string }) {
   return (
-    <Link to={to} className="flex flex-col items-center gap-2 rounded-xl px-2 py-4 text-center text-sm text-foreground/70 transition hover:bg-accent hover:text-accent-foreground">
+    <Link to={to} className="flex flex-col items-center gap-2 px-2 py-4 text-center text-sm text-foreground/70 transition hover:bg-accent hover:text-accent-foreground">
       <Icon className="size-6 text-primary" />
       {label}
     </Link>
@@ -99,7 +99,7 @@ export default function Dashboard() {
 
   if (loadError) {
     return (
-      <div className="rounded-2xl bg-background py-16 text-center shadow-sm">
+      <div className="bg-background py-16 text-center shadow-sm">
         <h1 className="text-xl font-semibold">Couldn&apos;t load your courses</h1>
         <p className="mt-2 text-muted-foreground">Please check your connection and try again.</p>
         <button type="button" onClick={() => window.location.reload()} className="mt-6 rounded-full border px-6 py-3 text-sm font-semibold transition hover:border-primary hover:text-primary">
@@ -141,7 +141,7 @@ export default function Dashboard() {
       <h1 className="text-2xl font-semibold">Home</h1>
 
       {showWelcome && (
-        <div role="status" className="mt-4 flex items-center gap-3 rounded-2xl bg-accent px-5 py-3.5 text-sm text-accent-foreground">
+        <div role="status" className="mt-4 flex items-center gap-3 bg-accent px-5 py-3.5 text-sm text-accent-foreground">
           <Link to="/portal/profile" aria-label="My profile">
             <Avatar url={avatarUrl} name={profile?.full_name ?? ""} className="size-11 border-2 border-background text-sm" />
           </Link>
@@ -160,7 +160,7 @@ export default function Dashboard() {
       )}
 
       {fresh.map((a) => (
-        <div key={a.id} role="status" className="mt-3 flex items-start gap-3 rounded-2xl bg-primary px-5 py-3.5 text-sm text-primary-foreground">
+        <div key={a.id} role="status" className="mt-3 flex items-start gap-3 bg-primary px-5 py-3.5 text-sm text-primary-foreground">
           <Megaphone className="mt-0.5 size-4 shrink-0" />
           <p className="flex-1">
             <strong>{a.courses?.title}:</strong> {a.title}
@@ -193,7 +193,7 @@ export default function Dashboard() {
               <ul className="space-y-2">
                 {current.map(({ course, done, total }) => (
                   <li key={course.id}>
-                    <Link to={`/portal/courses/${course.slug}`} className="flex items-center gap-3 rounded-xl bg-muted/60 px-3 py-3 transition hover:bg-accent">
+                    <Link to={`/portal/courses/${course.slug}`} className="flex items-center gap-3 bg-muted/60 px-3 py-3 transition hover:bg-accent">
                       <CourseIcon course={course} />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-medium">
@@ -221,7 +221,7 @@ export default function Dashboard() {
               <ul className="space-y-2">
                 {finished.map(({ course, total }) => (
                   <li key={course.id}>
-                    <Link to={`/portal/courses/${course.slug}`} className="flex items-center gap-3 rounded-xl bg-muted/60 px-3 py-3 transition hover:bg-accent">
+                    <Link to={`/portal/courses/${course.slug}`} className="flex items-center gap-3 bg-muted/60 px-3 py-3 transition hover:bg-accent">
                       <CourseIcon course={course} />
                       <p className="min-w-0 flex-1 truncate font-medium text-primary">{course.title}</p>
                       <span className="inline-flex shrink-0 items-center gap-1 text-sm text-green-700">
@@ -239,15 +239,15 @@ export default function Dashboard() {
         <div className="space-y-5">
           <Panel title="My Progress">
             <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="rounded-xl bg-muted/60 px-2 py-4">
+              <div className="bg-muted/60 px-2 py-4">
                 <p className="text-2xl font-semibold">{courses.length}</p>
                 <p className="mt-1 text-xs text-muted-foreground">Courses</p>
               </div>
-              <div className="rounded-xl bg-muted/60 px-2 py-4">
+              <div className="bg-muted/60 px-2 py-4">
                 <p className="text-2xl font-semibold">{completed.size}</p>
                 <p className="mt-1 text-xs text-muted-foreground">Lessons done</p>
               </div>
-              <div className="rounded-xl bg-muted/60 px-2 py-4">
+              <div className="bg-muted/60 px-2 py-4">
                 <p className="text-2xl font-semibold text-primary">{overall}%</p>
                 <p className="mt-1 text-xs text-muted-foreground">Overall</p>
               </div>
@@ -260,7 +260,7 @@ export default function Dashboard() {
             ) : (
               <ul className="max-h-80 space-y-2 overflow-y-auto">
                 {announcements.slice(0, 5).map((a) => (
-                  <li key={a.id} className="rounded-xl bg-muted/60 px-3 py-2.5">
+                  <li key={a.id} className="bg-muted/60 px-3 py-2.5">
                     <p className="text-sm font-medium">{a.title}</p>
                     {a.body && <p className="mt-0.5 line-clamp-3 whitespace-pre-line text-sm text-foreground/80">{a.body}</p>}
                     <p className="mt-1 text-xs text-muted-foreground">
@@ -276,6 +276,8 @@ export default function Dashboard() {
             <div className="grid grid-cols-3 gap-2">
               <Tile icon={BarChart3} label="Progress timeline" to="/portal/timeline" />
               <Tile icon={ClipboardList} label="Exercises" to="/portal/exercises" />
+              <Tile icon={ListChecks} label="Quizzes" to="/portal/quizzes" />
+              <Tile icon={Award} label="Certificates" to="/portal/certificates" />
               <Tile icon={NotebookPen} label="My notes" to="/portal/notes" />
             </div>
           </Panel>

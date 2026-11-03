@@ -7,7 +7,7 @@ export default function Timeline() {
     <div>
       <title>Progress Timeline | Scaltiva Student Portal</title>
       <h1 className="text-2xl font-semibold">Progress Timeline</h1>
-      <div className="mt-5 rounded-2xl bg-background p-4 shadow-sm sm:p-6">
+      <div className="mt-5 bg-background p-4 shadow-sm sm:p-6">
         {profile && <ProgressTimeline userId={profile.id} />}
       </div>
     </div>

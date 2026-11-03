@@ -7,6 +7,7 @@ import { input, label, primaryButton, secondaryButton } from "@/components/porta
 import Notice, { type Message } from "@/components/portal/Notice";
 import { useToast } from "@/components/portal/Toast";
 import Avatar from "@/components/portal/Avatar";
+import AvatarCropper from "@/components/portal/AvatarCropper";
 import { removeAvatar, uploadAvatar } from "@/lib/avatar";
 
 const EMPTY: StudentDetails = {
@@ -27,7 +28,7 @@ const required = <span className="text-primary" aria-hidden> *</span>;
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <fieldset className="overflow-hidden rounded-2xl border">
+    <fieldset className="overflow-hidden border">
       <legend className="sr-only">{title}</legend>
       <p className="bg-muted px-5 py-2.5 text-sm font-semibold" aria-hidden>{title}</p>
       <div className="grid gap-5 p-5 sm:grid-cols-2">{children}</div>
@@ -39,6 +40,7 @@ export default function Profile() {
   const { profile, avatarUrl, setAvatarUrl } = useAuth();
   const toast = useToast();
   const [photoBusy, setPhotoBusy] = useState(false);
+  const [cropping, setCropping] = useState<File | null>(null);
   const [details, setDetails] = useState<StudentDetails | null>(null);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<Message>(null);
@@ -53,19 +55,24 @@ export default function Profile() {
       .then(({ data }) => setDetails((data as StudentDetails | null) ?? EMPTY));
   }, [profile]);
 
-  async function onPhoto(e: ChangeEvent<HTMLInputElement>) {
+  // Choosing a file opens the cropper; uploading happens when they save it.
+  function onPhoto(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
-    if (!file || !profile) return;
-    if (file.size > 10 * 1024 * 1024) return toast("Please choose a photo under 10 MB.", "error");
-    setPhotoBusy(true);
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) return toast("Please choose a photo under 15 MB.", "error");
+    setCropping(file);
+  }
+
+  async function savePhoto(image: Blob) {
+    if (!profile) return;
     try {
-      setAvatarUrl(await uploadAvatar(profile.id, file));
+      setAvatarUrl(await uploadAvatar(profile.id, image));
+      setCropping(null);
       toast("Profile photo updated.");
     } catch {
-      toast("Couldn't upload the photo. Please try a JPG or PNG image.", "error");
+      toast("Couldn't upload the photo. Please try again.", "error");
     }
-    setPhotoBusy(false);
   }
 
   async function onRemovePhoto() {
@@ -131,17 +138,18 @@ export default function Profile() {
   return (
     <div>
       <title>My profile | Scaltiva Student Portal</title>
+      {cropping && <AvatarCropper file={cropping} onCancel={() => setCropping(null)} onSave={savePhoto} />}
       <h1 className="text-2xl font-semibold">My Profile</h1>
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="h-fit rounded-2xl bg-background p-6 shadow-sm">
+        <aside className="h-fit bg-background p-6 shadow-sm">
           <div className="text-center">
             <Avatar url={avatarUrl} name={profile?.full_name ?? ""} className="mx-auto size-28 border-4 border-accent text-3xl" />
             <div className="mt-3 flex justify-center gap-2">
               <label className={`${secondaryButton} cursor-pointer px-4 py-2 text-xs ${photoBusy ? "pointer-events-none opacity-60" : ""}`}>
                 {photoBusy ? <Loader2 className="size-3.5 animate-spin" /> : <Camera className="size-3.5" />}
                 {avatarUrl ? "Change photo" : "Add photo"}
-                <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={onPhoto} disabled={photoBusy} />
+                <input type="file" accept="image/*,.heic,.heif" className="sr-only" onChange={onPhoto} disabled={photoBusy} />
               </label>
               {avatarUrl && (
                 <button type="button" onClick={onRemovePhoto} disabled={photoBusy} aria-label="Remove photo" className={`${secondaryButton} px-3 py-2 text-xs hover:border-red-300 hover:text-red-600`}>
@@ -171,7 +179,7 @@ export default function Profile() {
           </dl>
         </aside>
 
-        <form onSubmit={onSubmit} className="space-y-5 rounded-2xl bg-background p-4 shadow-sm sm:p-6">
+        <form onSubmit={onSubmit} className="space-y-5 bg-background p-4 shadow-sm sm:p-6">
           <p className="text-sm text-muted-foreground">Fields marked with {required} are required.</p>
 
           <Section title="Personal Information">
@@ -213,7 +221,7 @@ export default function Profile() {
 
             <div className="sm:col-span-2">
               <label htmlFor="address" className={label}>Mailing address</label>
-              <textarea id="address" name="address" rows={2} maxLength={300} autoComplete="street-address" defaultValue={details.address ?? ""} className={`${input} resize-y rounded-3xl`} />
+              <textarea id="address" name="address" rows={2} maxLength={300} autoComplete="street-address" defaultValue={details.address ?? ""} className={`${input} resize-y `} />
             </div>
 
             <div>

@@ -69,7 +69,7 @@ function People({ list, empty }: { list: Person[]; empty: string }) {
     <ul className="space-y-1">
       {list.slice(0, SHOW).map((p) => (
         <li key={p.id}>
-          <Link to={`/admin/students/${p.id}`} className="block truncate rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+          <Link to={`/admin/students/${p.id}`} className="block truncate px-2 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
             {p.full_name}
           </Link>
         </li>
@@ -133,7 +133,7 @@ export default function Overview() {
               <ul className="space-y-1">
                 {data.newest.map((e) => (
                   <li key={e.id}>
-                    <Link to={`/admin/students/${e.user_id}`} className="block rounded-lg px-2 py-1.5 hover:bg-accent hover:text-accent-foreground">
+                    <Link to={`/admin/students/${e.user_id}`} className="block px-2 py-1.5 hover:bg-accent hover:text-accent-foreground">
                       <span className="block truncate text-sm font-medium">{e.profiles?.full_name}</span>
                       <span className="block truncate text-xs text-muted-foreground">
                         {e.courses?.title} · {new Date(e.enrolled_at).toLocaleDateString()}

@@ -36,7 +36,7 @@ export default function EnrollPicker({ options, noun, onEnroll, onClose }: Props
   }
 
   return (
-    <div className="rounded-3xl border bg-muted/50 p-4 sm:p-6">
+    <div className="border bg-muted/50 p-4 sm:p-6">
       {options.length === 0 ? (
         <p className="text-muted-foreground">There are no more {noun}s to add.</p>
       ) : (
@@ -53,7 +53,7 @@ export default function EnrollPicker({ options, noun, onEnroll, onClose }: Props
               className={`${input} pl-11`}
             />
           </div>
-          <ul className="mt-3 max-h-72 divide-y overflow-y-auto rounded-2xl border bg-background">
+          <ul className="mt-3 max-h-72 divide-y overflow-y-auto border bg-background">
             {shown.length === 0 && <li className="px-4 py-3 text-sm text-muted-foreground">No matches.</li>}
             {shown.map((o) => (
               <li key={o.id}>

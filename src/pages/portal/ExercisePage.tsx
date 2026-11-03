@@ -96,7 +96,7 @@ export default function ExercisePage() {
       )}
 
       {submission?.reviewed_at && (
-        <div className="mt-5 rounded-2xl border border-green-200 bg-green-50 p-6 text-green-900">
+        <div className="mt-5 border border-green-200 bg-green-50 p-6 text-green-900">
           <h2 className="flex items-center gap-2 font-semibold">
             <MessageSquareText className="size-5" />
             Feedback from Scaltiva
@@ -116,7 +116,7 @@ export default function ExercisePage() {
           <h2 className="text-xl font-semibold">{submission ? "Your submission" : "Submit your work"}</h2>
           <div>
             <label htmlFor="answer" className={label}>Your answer</label>
-            <textarea id="answer" name="answer" rows={8} maxLength={10000} defaultValue={submission?.answer ?? ""} className={`${input} resize-y rounded-3xl`} />
+            <textarea id="answer" name="answer" rows={8} maxLength={10000} defaultValue={submission?.answer ?? ""} className={`${input} resize-y `} />
           </div>
           <div>
             <label htmlFor="link" className={label}>Link to your work (optional)</label>
@@ -134,7 +134,7 @@ export default function ExercisePage() {
         <div className={`${card} mt-5`}>
           <h2 className="text-xl font-semibold">Your submission</h2>
           <p className="mt-1 text-sm text-muted-foreground">Submitted {new Date(submission.submitted_at).toLocaleString()}</p>
-          {submission.answer && <p className="mt-4 whitespace-pre-line rounded-2xl bg-muted/60 p-4">{submission.answer}</p>}
+          {submission.answer && <p className="mt-4 whitespace-pre-line bg-muted/60 p-4">{submission.answer}</p>}
           {submission.link && (
             <a href={submission.link} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 break-all font-semibold text-primary hover:underline">
               {submission.link}

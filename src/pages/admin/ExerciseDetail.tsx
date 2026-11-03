@@ -45,7 +45,7 @@ function ReviewForm({ exercise, submission, onSaved }: { exercise: Exercise; sub
       </div>
       <div>
         <label htmlFor={`feedback-${submission.id}`} className={label}>Feedback</label>
-        <textarea id={`feedback-${submission.id}`} name="feedback" rows={2} maxLength={2000} defaultValue={submission.feedback ?? ""} className={`${input} resize-y rounded-3xl`} />
+        <textarea id={`feedback-${submission.id}`} name="feedback" rows={2} maxLength={2000} defaultValue={submission.feedback ?? ""} className={`${input} resize-y `} />
       </div>
       <div className="sm:col-span-2">
         <button type="submit" disabled={saving} className={primaryButton}>
@@ -161,7 +161,7 @@ export default function ExerciseDetail() {
               const status = exerciseStatus(exercise, sub);
               const expanded = open === st.user_id;
               return (
-                <li key={st.user_id} className="rounded-2xl border">
+                <li key={st.user_id} className="border">
                   <button
                     type="button"
                     onClick={() => setOpen(expanded ? null : st.user_id)}
@@ -186,7 +186,7 @@ export default function ExerciseDetail() {
                   </button>
                   {sub && expanded && (
                     <div className="px-4 pb-4">
-                      {sub.answer && <p className="whitespace-pre-line rounded-2xl bg-muted/60 p-4 text-sm">{sub.answer}</p>}
+                      {sub.answer && <p className="whitespace-pre-line bg-muted/60 p-4 text-sm">{sub.answer}</p>}
                       {sub.link && (
                         <a href={sub.link} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 break-all text-sm font-semibold text-primary hover:underline">
                           {sub.link}

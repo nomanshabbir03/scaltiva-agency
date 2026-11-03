@@ -56,7 +56,7 @@ export default function NoteEditor() {
   }
   if (!isNew && note === null) {
     return (
-      <div className="max-w-3xl rounded-2xl bg-background py-16 text-center shadow-sm">
+      <div className="max-w-3xl bg-background py-16 text-center shadow-sm">
         <h1 className="text-2xl font-semibold">Note not found</h1>
         <Link to={base} className={`${secondaryButton} mt-6`}>Back to my notes</Link>
       </div>
@@ -72,14 +72,14 @@ export default function NoteEditor() {
       </Link>
       <h1 className="mt-3 text-2xl font-semibold">{isNew ? "Add Note" : "Edit Note"}</h1>
 
-      <form onSubmit={onSubmit} className="mt-5 space-y-5 rounded-2xl bg-background p-4 shadow-sm sm:p-6">
+      <form onSubmit={onSubmit} className="mt-5 space-y-5 bg-background p-4 shadow-sm sm:p-6">
         <div>
           <label htmlFor="title" className={label}>Title</label>
           <input id="title" name="title" required maxLength={150} autoFocus={isNew} defaultValue={note?.title} className={input} />
         </div>
         <div>
           <label htmlFor="body" className={label}>Note</label>
-          <textarea id="body" name="body" rows={12} maxLength={20000} defaultValue={note?.body} className={`${input} resize-y rounded-3xl`} />
+          <textarea id="body" name="body" rows={12} maxLength={20000} defaultValue={note?.body} className={`${input} resize-y `} />
         </div>
         <Notice message={message} />
         <div className="flex flex-wrap gap-3">

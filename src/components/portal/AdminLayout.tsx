@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { BookOpen, ClipboardCheck, Inbox, LayoutDashboard, NotebookPen, Users } from "lucide-react";
+import { BarChart3, BookOpen, ClipboardCheck, Inbox, LayoutDashboard, NotebookPen, Users } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { LogoutButton } from "@/components/portal/PortalLayout";
@@ -10,6 +10,7 @@ const LINKS = [
   { to: "/admin/courses", label: "Courses", icon: BookOpen, end: false },
   { to: "/admin/reviews", label: "To review", icon: ClipboardCheck, end: false },
   { to: "/admin/messages", label: "Messages", icon: Inbox, end: false },
+  { to: "/admin/insights", label: "Insights", icon: BarChart3, end: false },
   { to: "/admin/notes", label: "My notes", icon: NotebookPen, end: false },
 ];
 

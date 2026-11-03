@@ -2,8 +2,8 @@ import { supabaseAdmin } from './supabase.js'
 
 // Every admin API call must start with this. It reads the caller's Supabase
 // access token from the Authorization header and checks, on the server, that
-// it belongs to an active admin. Returns the admin client, or null after
-// sending a 401/403 response.
+// it belongs to an active admin. Returns { admin, userId } (admin is the
+// secret-key client), or null after sending a 401/403 response.
 export async function requireAdmin(req, res) {
   const token = String(req.headers.authorization ?? '').replace(/^Bearer /, '')
   if (!token) {
@@ -28,5 +28,5 @@ export async function requireAdmin(req, res) {
     return null
   }
 
-  return admin
+  return { admin, userId: data.user.id }
 }

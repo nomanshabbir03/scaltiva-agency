@@ -41,7 +41,7 @@ export default function Account() {
         Signed in as <span className="font-medium text-foreground">{profile?.email}</span>
       </p>
 
-      <form onSubmit={onSubmit} className="mt-8 space-y-5 rounded-[2rem] bg-background p-6 shadow-xl shadow-primary/5 sm:p-8">
+      <form onSubmit={onSubmit} className="mt-8 space-y-5 bg-background p-6 shadow-xl shadow-primary/5 sm:p-8">
         <h2 className="text-xl font-semibold">Change password</h2>
         <div>
           <label htmlFor="password" className={label}>New password</label>
@@ -57,8 +57,8 @@ export default function Account() {
             role={status.type === "error" ? "alert" : "status"}
             className={
               status.type === "error"
-                ? "rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700"
-                : "rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700"
+                ? "bg-red-50 px-4 py-3 text-sm text-red-700"
+                : "bg-green-50 px-4 py-3 text-sm text-green-700"
             }
           >
             {status.text}

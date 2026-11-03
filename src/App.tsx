@@ -21,6 +21,11 @@ import ExercisePage from "@/pages/portal/ExercisePage";
 import ExerciseDetail from "@/pages/admin/ExerciseDetail";
 import Reviews from "@/pages/admin/Reviews";
 import Messages from "@/pages/admin/Messages";
+import Insights from "@/pages/admin/Insights";
+import QuizDetail from "@/pages/admin/QuizDetail";
+import Quizzes from "@/pages/portal/Quizzes";
+import QuizPage from "@/pages/portal/QuizPage";
+import Certificates from "@/pages/portal/Certificates";
 import Notes from "@/pages/portal/Notes";
 import NoteEditor from "@/pages/portal/NoteEditor";
 import AdminOverview from "@/pages/admin/Overview";
@@ -81,6 +86,9 @@ export default function App() {
           <Route path="exercises/:id" element={<ExercisePage />} />
           <Route path="notes" element={<Notes />} />
           <Route path="notes/:id" element={<NoteEditor />} />
+          <Route path="quizzes" element={<Quizzes />} />
+          <Route path="quizzes/:id" element={<QuizPage />} />
+          <Route path="certificates" element={<Certificates />} />
           <Route path="account" element={<Account />} />
         </Route>
       </Route>
@@ -96,6 +104,8 @@ export default function App() {
           <Route path="exercises/:id" element={<ExerciseDetail />} />
           <Route path="reviews" element={<Reviews />} />
           <Route path="messages" element={<Messages />} />
+          <Route path="insights" element={<Insights />} />
+          <Route path="quizzes/:id" element={<QuizDetail />} />
           <Route path="notes" element={<Notes />} />
           <Route path="notes/:id" element={<NoteEditor />} />
         </Route>

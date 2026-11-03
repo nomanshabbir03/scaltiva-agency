@@ -232,7 +232,7 @@ export default function CoursePage() {
                     onClick={() => open(l)}
                     aria-current={l.id === lesson.id ? "true" : undefined}
                     className={cn(
-                      "flex w-full items-start gap-3 rounded-2xl px-3 py-3 text-left transition",
+                      "flex w-full items-start gap-3 px-3 py-3 text-left transition",
                       l.id === lesson.id ? "bg-accent text-accent-foreground" : "hover:bg-muted",
                     )}
                   >

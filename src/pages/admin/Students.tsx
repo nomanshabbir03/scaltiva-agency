@@ -33,7 +33,7 @@ export function StatusBadge({ active }: { active: boolean }) {
   );
 }
 
-const select = `${input} mt-0 w-auto py-2.5 pr-10 text-sm`;
+const select = cn(input, "mt-0 w-auto shrink-0 py-2.5 pr-10 text-sm");
 
 export default function Students() {
   const toast = useToast();
@@ -133,8 +133,8 @@ export default function Students() {
         </div>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <div className="relative w-full max-w-sm">
+      <div className="mt-6 flex flex-wrap items-center gap-3 lg:flex-nowrap">
+        <div className="relative w-full min-w-0 lg:w-auto lg:flex-1">
           <label htmlFor="search" className="sr-only">Search students</label>
           <Search className="pointer-events-none absolute left-5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input

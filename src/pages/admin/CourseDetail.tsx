@@ -10,6 +10,8 @@ import CourseStudents from "@/components/portal/CourseStudents";
 import CourseExercises from "@/components/portal/CourseExercises";
 import Collapsible from "@/components/portal/Collapsible";
 import CourseAnnouncements from "@/components/portal/CourseAnnouncements";
+import CourseQuizzes from "@/components/portal/CourseQuizzes";
+import CourseCertificates from "@/components/portal/CourseCertificates";
 import { PublishedBadge } from "@/pages/admin/Courses";
 
 const iconButton =
@@ -102,7 +104,7 @@ export default function CourseDetail() {
                 <LessonForm courseId={course.id} lesson={lesson} position={lesson.position} onSaved={onLessonSaved} onCancel={() => setEditing(null)} />
               </li>
             ) : (
-              <li key={lesson.id} className="flex items-center gap-3 rounded-2xl border px-4 py-3">
+              <li key={lesson.id} className="flex items-center gap-3 border px-4 py-3">
                 <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-sm font-semibold text-accent-foreground">
                   {i + 1}
                 </span>
@@ -155,8 +157,14 @@ export default function CourseDetail() {
       <Collapsible title="Exercises">
         <CourseExercises courseId={course.id} />
       </Collapsible>
+      <Collapsible title="Quizzes">
+        <CourseQuizzes courseId={course.id} />
+      </Collapsible>
       <Collapsible title="Enrolled students">
         <CourseStudents courseId={course.id} courseTitle={course.title} />
+      </Collapsible>
+      <Collapsible title="Certificates">
+        <CourseCertificates courseId={course.id} />
       </Collapsible>
       <Collapsible title="Course details">
         <CourseForm key={course.id} course={course} onSaved={setCourse} bare />

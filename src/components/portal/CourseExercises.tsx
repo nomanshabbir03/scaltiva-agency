@@ -52,14 +52,14 @@ function ExerciseForm({ courseId, exercise, onSaved, onCancel }: {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 rounded-3xl border bg-muted/50 p-4 sm:p-6">
+    <form onSubmit={onSubmit} className="space-y-4 border bg-muted/50 p-4 sm:p-6">
       <div>
         <label htmlFor={`${prefix}-title`} className={label}>Exercise title</label>
         <input id={`${prefix}-title`} name="title" required maxLength={150} defaultValue={exercise?.title} className={input} />
       </div>
       <div>
         <label htmlFor={`${prefix}-instructions`} className={label}>Instructions</label>
-        <textarea id={`${prefix}-instructions`} name="instructions" rows={5} maxLength={5000} defaultValue={exercise?.instructions ?? ""} className={`${input} resize-y rounded-3xl`} />
+        <textarea id={`${prefix}-instructions`} name="instructions" rows={5} maxLength={5000} defaultValue={exercise?.instructions ?? ""} className={`${input} resize-y `} />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
@@ -135,7 +135,7 @@ export default function CourseExercises({ courseId }: { courseId: string }) {
                   <ExerciseForm courseId={courseId} exercise={row} onSaved={onSaved} onCancel={() => setEditing(null)} />
                 </li>
               ) : (
-                <li key={row.id} className="flex items-center gap-3 rounded-2xl border px-4 py-3">
+                <li key={row.id} className="flex items-center gap-3 border px-4 py-3">
                   <ClipboardList className="size-5 shrink-0 text-primary" />
                   <Link to={`/admin/exercises/${row.id}`} className="min-w-0 flex-1 hover:text-primary">
                     <p className="truncate font-medium">{row.title}</p>

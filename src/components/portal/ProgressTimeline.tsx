@@ -11,6 +11,7 @@ type CourseData = {
     title: string;
     lessons: { id: string; created_at: string }[];
     exercises: { id: string }[];
+    quizzes: { id: string }[];
   } | null;
 };
 
@@ -23,7 +24,7 @@ const pct = (part: number, whole: number) => (whole ? Math.round((part / whole) 
 
 function Box({ title, className, children }: { title: string; className?: string; children: ReactNode }) {
   return (
-    <section className={cn("rounded-2xl border p-4 sm:p-5", className)}>
+    <section className={cn("border p-4 sm:p-5", className)}>
       <h3 className="border-b pb-3 text-sm font-semibold">{title}</h3>
       <div className="pt-4">{children}</div>
     </section>
@@ -36,18 +37,21 @@ export default function ProgressTimeline({ userId }: { userId: string }) {
   const [courses, setCourses] = useState<CourseData[] | null>(null);
   const [progress, setProgress] = useState<ProgressRow[]>([]);
   const [submitted, setSubmitted] = useState<Set<string>>(new Set());
+  const [quizScores, setQuizScores] = useState<Record<string, number>>({});
   const [tab, setTab] = useState(0);
 
   useEffect(() => {
     Promise.all([
       supabase
         .from("enrollments")
-        .select("enrolled_at, courses(id, title, lessons(id, created_at), exercises(id))")
+        .select("enrolled_at, courses(id, title, lessons(id, created_at), exercises(id), quizzes(id))")
         .eq("user_id", userId)
         .order("enrolled_at"),
       supabase.from("lesson_progress").select("lesson_id, completed, completed_at").eq("user_id", userId),
       supabase.from("exercise_submissions").select("exercise_id").eq("user_id", userId),
-    ]).then(([e, p, s]) => {
+      supabase.from("quiz_attempts").select("quiz_id, score, total").eq("user_id", userId),
+    ]).then(([e, p, s, q]) => {
+      setQuizScores(Object.fromEntries((q.data ?? []).map((a) => [a.quiz_id, a.total ? (a.score / a.total) * 100 : 0])));
       // Students only get courses they can see (published); admins get all.
       setCourses(((e.data ?? []) as unknown as CourseData[]).filter((c) => c.courses));
       setProgress((p.data as ProgressRow[] | null) ?? []);
@@ -67,7 +71,7 @@ export default function ProgressTimeline({ userId }: { userId: string }) {
   }
 
   const { enrolled_at, courses: course } = courses[Math.min(tab, courses.length - 1)];
-  const { lessons, exercises } = course!;
+  const { lessons, exercises, quizzes } = course!;
   const lessonIds = new Set(lessons.map((l) => l.id));
   const rows = progress.filter((p) => lessonIds.has(p.lesson_id));
   const completed = rows.filter((p) => p.completed);
@@ -84,7 +88,11 @@ export default function ProgressTimeline({ userId }: { userId: string }) {
 
   const lessonsPct = pct(completed.length, lessons.length);
   const exercisesPct = pct(exercisesDone, exercises.length);
-  const overall = exercises.length ? Math.round((lessonsPct + exercisesPct) / 2) : lessonsPct;
+  const taken = quizzes.filter((z) => z.id in quizScores);
+  const quizAverage = taken.length ? Math.round(taken.reduce((n, z) => n + quizScores[z.id], 0) / taken.length) : null;
+  // Average of the parts this course has: lessons, exercises, and quiz scores.
+  const parts = [lessonsPct, ...(exercises.length ? [exercisesPct] : []), ...(quizAverage !== null ? [quizAverage] : [])];
+  const overall = Math.round(parts.reduce((a, b) => a + b, 0) / parts.length);
 
   return (
     <div>
@@ -137,7 +145,18 @@ export default function ProgressTimeline({ userId }: { userId: string }) {
           />
         </Box>
 
-        <Box title="Course Progress (Overall)" className="lg:col-span-2">
+        <Box title="Quizzes">
+          {quizzes.length === 0 ? (
+            <p className="py-16 text-center text-sm text-muted-foreground">No quizzes in this course yet.</p>
+          ) : (
+            <>
+              <Donut value={taken.length} total={quizzes.length} label="Attempted" remainderLabel="Not attempted" />
+              {quizAverage !== null && <p className="mt-2 text-center text-sm text-muted-foreground">Average score: {quizAverage}%</p>}
+            </>
+          )}
+        </Box>
+
+        <Box title="Course Progress (Overall)">
           <div className="flex h-full flex-col justify-center py-6">
             <p className="text-5xl font-semibold">
               {overall}
@@ -149,6 +168,7 @@ export default function ProgressTimeline({ userId }: { userId: string }) {
             <p className="mt-3 text-sm text-muted-foreground">
               {completed.length} of {lessons.length} lessons completed
               {exercises.length > 0 && ` · ${exercisesDone} of ${exercises.length} exercises submitted`}
+              {quizAverage !== null && ` · quiz average ${quizAverage}%`}
             </p>
           </div>
         </Box>

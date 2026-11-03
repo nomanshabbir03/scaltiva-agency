@@ -73,9 +73,9 @@ export default function Courses() {
               <li key={c.id}>
                 <Link to={`/admin/courses/${c.id}`} className="flex items-center gap-4 px-5 py-4 transition hover:bg-accent sm:px-6">
                   {c.thumbnail_url ? (
-                    <img src={c.thumbnail_url} alt="" className="aspect-video w-20 shrink-0 rounded-lg object-cover" />
+                    <img src={c.thumbnail_url} alt="" className="aspect-video w-20 shrink-0 object-cover" />
                   ) : (
-                    <span className="grid aspect-video w-20 shrink-0 place-items-center rounded-lg bg-accent text-primary">
+                    <span className="grid aspect-video w-20 shrink-0 place-items-center bg-accent text-primary">
                       <BookOpen className="size-5" />
                     </span>
                   )}

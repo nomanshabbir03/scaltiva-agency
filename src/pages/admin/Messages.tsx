@@ -115,7 +115,7 @@ export default function Messages() {
                       <p className="text-sm text-muted-foreground">
                         {m.email} · {new Date(m.created_at).toLocaleString()}
                       </p>
-                      <p className="mt-3 whitespace-pre-line rounded-2xl bg-muted/60 p-4">{m.message}</p>
+                      <p className="mt-3 whitespace-pre-line bg-muted/60 p-4">{m.message}</p>
                       <div className="mt-4 flex flex-wrap gap-2">
                         <a href={`mailto:${m.email}?subject=${encodeURIComponent("Re: your message to Scaltiva")}`} className={secondaryButton}>
                           <Reply className="size-4" />

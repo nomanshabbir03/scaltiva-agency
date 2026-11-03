@@ -45,7 +45,7 @@ export default function StudentCourses({ studentId }: { studentId: string }) {
   }
 
   async function unenroll(e: Enrollment) {
-    if (!window.confirm(`Remove the student from "${e.courses?.title ?? "this course"}"?`)) return;
+    if (!window.confirm(`Remove the student from "${e.courses?.title ?? " this course"}"?`)) return;
     const { error } = await supabase.from("enrollments").delete().eq("id", e.id);
     if (error) return toast("Couldn't remove the course. Please try again.", "error");
     setEnrollments((list) => list?.filter((x) => x.id !== e.id) ?? null);
