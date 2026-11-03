@@ -6,6 +6,8 @@ import { adminApi } from "@/lib/adminApi";
 import { card, input, label, primaryButton } from "@/components/portal/form";
 import Notice, { type Message } from "@/components/portal/Notice";
 import StudentCourses from "@/components/portal/StudentCourses";
+import StudentProfileInfo from "@/components/portal/StudentProfileInfo";
+import ProgressTimeline from "@/components/portal/ProgressTimeline";
 import { StatusBadge } from "@/pages/admin/Students";
 
 type Student = {
@@ -92,7 +94,7 @@ export default function StudentDetail() {
   }
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-6xl">
       <title>{`${student.full_name} | Scaltiva admin`}</title>
       {back}
       <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -135,7 +137,12 @@ export default function StudentDetail() {
         </form>
       </div>
 
+      <StudentProfileInfo studentId={student.id} name={student.full_name} />
       <StudentCourses studentId={student.id} />
+      <section className={`${card} mt-6`}>
+        <h2 className="mb-4 text-xl font-semibold">Progress timeline</h2>
+        <ProgressTimeline userId={student.id} />
+      </section>
     </div>
   );
 }

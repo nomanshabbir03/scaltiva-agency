@@ -7,6 +7,7 @@ import { useToast } from "@/components/portal/Toast";
 import CourseForm, { type Course } from "@/components/portal/CourseForm";
 import LessonForm, { type Lesson } from "@/components/portal/LessonForm";
 import CourseStudents from "@/components/portal/CourseStudents";
+import CourseExercises from "@/components/portal/CourseExercises";
 import { PublishedBadge } from "@/pages/admin/Courses";
 
 const iconButton =
@@ -152,6 +153,7 @@ export default function CourseDetail() {
         </div>
       </section>
 
+      <CourseExercises courseId={course.id} />
       <CourseStudents courseId={course.id} />
     </div>
   );

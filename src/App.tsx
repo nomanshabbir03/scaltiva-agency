@@ -14,6 +14,13 @@ import Login from "@/pages/Login";
 import Dashboard from "@/pages/portal/Dashboard";
 import Account from "@/pages/portal/Account";
 import CoursePage from "@/pages/portal/CoursePage";
+import Profile from "@/pages/portal/Profile";
+import Timeline from "@/pages/portal/Timeline";
+import Exercises from "@/pages/portal/Exercises";
+import ExercisePage from "@/pages/portal/ExercisePage";
+import ExerciseDetail from "@/pages/admin/ExerciseDetail";
+import Notes from "@/pages/portal/Notes";
+import NoteEditor from "@/pages/portal/NoteEditor";
 import AdminOverview from "@/pages/admin/Overview";
 import Students from "@/pages/admin/Students";
 import NewStudent from "@/pages/admin/NewStudent";
@@ -66,6 +73,12 @@ export default function App() {
         <Route element={<PortalLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="courses/:slug" element={<CoursePage />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="timeline" element={<Timeline />} />
+          <Route path="exercises" element={<Exercises />} />
+          <Route path="exercises/:id" element={<ExercisePage />} />
+          <Route path="notes" element={<Notes />} />
+          <Route path="notes/:id" element={<NoteEditor />} />
           <Route path="account" element={<Account />} />
         </Route>
       </Route>
@@ -78,6 +91,9 @@ export default function App() {
           <Route path="courses" element={<Courses />} />
           <Route path="courses/new" element={<NewCourse />} />
           <Route path="courses/:id" element={<CourseDetail />} />
+          <Route path="exercises/:id" element={<ExerciseDetail />} />
+          <Route path="notes" element={<Notes />} />
+          <Route path="notes/:id" element={<NoteEditor />} />
         </Route>
       </Route>
 

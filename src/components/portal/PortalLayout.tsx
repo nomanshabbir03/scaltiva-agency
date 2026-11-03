@@ -1,10 +1,9 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { ClipboardList, Globe, Home, KeyRound, LogOut, Menu, NotebookPen, TrendingUp, UserRound, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import Avatar from "@/components/portal/Avatar";
 import { cn } from "@/lib/utils";
-
-const navClass = ({ isActive }: { isActive: boolean }) =>
-  cn("text-sm font-semibold transition hover:text-primary", isActive ? "text-primary" : "text-foreground/70");
 
 export function LogoutButton() {
   const { signOut } = useAuth();
@@ -15,34 +14,107 @@ export function LogoutButton() {
       className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition hover:border-primary hover:text-primary"
     >
       <LogOut className="size-4" />
-      Log out
+      <span className="hidden sm:inline">Log out</span>
     </button>
   );
 }
 
-// Student area: simple top bar, then the page.
+const LINKS = [
+  { to: "/portal", label: "Home", icon: Home, end: true },
+  { to: "/portal/timeline", label: "Progress timeline", icon: TrendingUp, end: false },
+  { to: "/portal/exercises", label: "Exercises", icon: ClipboardList, end: false },
+  { to: "/portal/notes", label: "My notes", icon: NotebookPen, end: false },
+  { to: "/portal/profile", label: "My profile", icon: UserRound, end: false },
+  { to: "/portal/account", label: "Password", icon: KeyRound, end: false },
+];
+
+const EXTERNAL = [
+  { href: "/", label: "Scaltiva website", icon: Globe },
+];
+
+const itemClass = "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition";
+
+// Student area: top bar, a slim icon sidebar (labels when opened), then the page.
 export default function PortalLayout() {
+  const { profile, avatarUrl } = useAuth();
+  const { pathname } = useLocation();
+  const [open, setOpen] = useState(false);
+
+  // Close the menu after navigating.
+  useEffect(() => setOpen(false), [pathname]);
+
   return (
     <div className="min-h-screen bg-muted">
       <meta name="robots" content="noindex" />
-      <header className="border-b bg-background">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-          <Link to="/portal" className="flex items-center gap-2" aria-label="My courses">
-            <span className="grid size-9 place-items-center rounded-full bg-primary text-lg font-bold text-primary-foreground">
-              S
-            </span>
+      <header className="sticky top-0 z-30 border-b bg-background">
+        <div className="flex h-16 items-center gap-3 px-3 sm:px-4">
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            className="grid size-10 place-items-center rounded-full transition hover:bg-accent hover:text-primary"
+          >
+            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
+          <Link to="/portal" className="flex items-center gap-2" aria-label="Portal home">
+            <span className="grid size-9 place-items-center rounded-full bg-primary text-lg font-bold text-primary-foreground">S</span>
             <span className="hidden text-lg font-light uppercase tracking-[0.2em] sm:inline">Scaltiva</span>
           </Link>
-          <nav className="flex items-center gap-4 sm:gap-6">
-            <NavLink to="/portal" end className={navClass}>My courses</NavLink>
-            <NavLink to="/portal/account" className={navClass}>Account</NavLink>
+          <p className="mx-auto hidden text-lg font-semibold md:block">Student Portal</p>
+          <div className="ml-auto flex items-center gap-3 md:ml-0">
+            <Link to="/portal/profile" aria-label="My profile">
+              <Avatar url={avatarUrl} name={profile?.full_name ?? ""} className="size-9 text-sm" />
+            </Link>
+            <span className="hidden max-w-40 truncate text-sm font-semibold uppercase lg:inline">{profile?.full_name}</span>
             <LogoutButton />
-          </nav>
+          </div>
         </div>
       </header>
-      <main id="main-content" className="mx-auto max-w-6xl px-4 py-8">
-        <Outlet />
-      </main>
+
+      <div className="flex">
+        {/* Phones: hidden until the menu is opened. Larger screens: always-visible icon rail. */}
+        {open && <div className="fixed inset-0 top-16 z-10 bg-black/30 md:hidden" onClick={() => setOpen(false)} aria-hidden />}
+        <nav
+          aria-label="Portal"
+          className={cn(
+            "fixed bottom-0 left-0 top-16 z-20 space-y-1 border-r bg-background p-2 transition-all md:sticky md:block md:h-[calc(100vh-4rem)]",
+            open ? "block w-60" : "hidden w-[60px]",
+          )}
+        >
+          {LINKS.map(({ to, label, icon: Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              title={label}
+              className={({ isActive }) =>
+                cn(itemClass, isActive ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:bg-accent hover:text-accent-foreground")
+              }
+            >
+              <Icon className="size-5 shrink-0" />
+              <span className={open ? "" : "sr-only"}>{label}</span>
+            </NavLink>
+          ))}
+          {EXTERNAL.map(({ href, label, icon: Icon }) => (
+            <a
+              key={label}
+              href={href}
+              title={label}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(itemClass, "text-foreground/70 hover:bg-accent hover:text-accent-foreground")}
+            >
+              <Icon className="size-5 shrink-0" />
+              <span className={open ? "" : "sr-only"}>{label}</span>
+            </a>
+          ))}
+        </nav>
+
+        <main id="main-content" className="min-w-0 flex-1 px-4 py-6 sm:px-6">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }

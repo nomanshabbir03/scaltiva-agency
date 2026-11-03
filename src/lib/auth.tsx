@@ -20,6 +20,9 @@ type AuthState = {
   /** Message for the login page, e.g. after a disabled account is signed out. */
   notice: string;
   signOut: (notice?: string) => Promise<void>;
+  /** The signed-in user's profile picture, if they uploaded one. */
+  avatarUrl: string | null;
+  setAvatarUrl: (url: string | null) => void;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -31,6 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [ready, setReady] = useState(false);
   const [notice, setNotice] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const signOut = async (message = "") => {
     setNotice(message);
@@ -50,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const userId = session?.user.id;
   useEffect(() => {
     setProfile(null);
+    setAvatarUrl(null);
     if (!userId) return;
     let cancelled = false;
     supabase
@@ -62,6 +67,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!data) return void signOut("This account doesn't have portal access. Please contact Scaltiva.");
         if (!data.is_active) return void signOut("Your account has been disabled. Please contact Scaltiva.");
         setProfile(data);
+        supabase
+          .from("student_details")
+          .select("avatar_url")
+          .eq("user_id", userId)
+          .maybeSingle()
+          .then(({ data: details }) => !cancelled && setAvatarUrl(details?.avatar_url ?? null));
       });
     return () => {
       cancelled = true;
@@ -71,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loading = !ready || (!!session && !profile);
 
   return (
-    <AuthContext.Provider value={{ session, profile, loading, notice, signOut }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ session, profile, loading, notice, signOut, avatarUrl, setAvatarUrl }}>{children}</AuthContext.Provider>
   );
 }
 
