@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import { Award, ClipboardList, ListChecks, Globe, Home, KeyRound, LogOut, Menu, NotebookPen, TrendingUp, UserRound, X } from "lucide-react";
+import { Award, ClipboardList, ListChecks, Globe, Home, KeyRound, LogOut, Menu, MoreHorizontal, NotebookPen, TrendingUp, UserRound, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import Avatar from "@/components/portal/Avatar";
 import { cn } from "@/lib/utils";
@@ -30,13 +30,22 @@ const LINKS = [
   { to: "/portal/account", label: "Password", icon: KeyRound, end: false },
 ];
 
+// Phone tab bar: the main sections; "More" opens the full menu.
+const TABS = [
+  { to: "/portal", label: "Home", icon: Home, end: true },
+  { to: "/portal/timeline", label: "Progress", icon: TrendingUp, end: false },
+  { to: "/portal/exercises", label: "Exercises", icon: ClipboardList, end: false },
+  { to: "/portal/quizzes", label: "Quizzes", icon: ListChecks, end: false },
+];
+
 const EXTERNAL = [
   { href: "/", label: "Scaltiva website", icon: Globe },
 ];
 
 const itemClass = "flex items-center gap-3 px-3 py-2.5 text-sm font-semibold transition";
 
-// Student area: top bar, a slim icon sidebar (labels when opened), then the page.
+// Student area: top bar, a slim icon sidebar (labels when opened) on larger
+// screens, and a bottom tab bar plus slide-in menu on phones.
 export default function PortalLayout() {
   const { profile, avatarUrl } = useAuth();
   const { pathname } = useLocation();
@@ -76,11 +85,11 @@ export default function PortalLayout() {
 
       <div className="flex">
         {/* Phones: hidden until the menu is opened. Larger screens: always-visible icon rail. */}
-        {open && <div className="fixed inset-0 top-16 z-10 bg-black/30 md:hidden" onClick={() => setOpen(false)} aria-hidden />}
+        {open && <div className="fixed inset-0 top-16 z-30 bg-black/30 md:hidden" onClick={() => setOpen(false)} aria-hidden />}
         <nav
           aria-label="Portal"
           className={cn(
-            "fixed bottom-0 left-0 top-16 z-20 space-y-1 border-r bg-background p-2 transition-all md:sticky md:block md:h-[calc(100vh-4rem)]",
+            "fixed bottom-0 left-0 top-16 z-40 space-y-1 overflow-y-auto border-r bg-background p-2 transition-all md:sticky md:z-20 md:block md:h-[calc(100vh-4rem)]",
             open ? "block w-60" : "hidden w-[60px]",
           )}
         >
@@ -113,10 +122,38 @@ export default function PortalLayout() {
           ))}
         </nav>
 
-        <main id="main-content" className="min-w-0 flex-1 px-4 py-6 sm:px-6">
+        {/* Bottom padding on phones keeps content clear of the tab bar. */}
+        <main id="main-content" className="min-w-0 flex-1 px-3 pb-24 pt-5 sm:px-6 md:py-6">
           <Outlet />
         </main>
       </div>
+
+      <nav aria-label="Main sections" className="fixed inset-x-0 bottom-0 z-30 border-t bg-background pb-[env(safe-area-inset-bottom)] md:hidden">
+        <div className="grid grid-cols-5">
+          {TABS.map(({ to, label, icon: Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className={({ isActive }) =>
+                cn("flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition", isActive ? "text-primary" : "text-foreground/60")
+              }
+            >
+              <Icon className="size-5" />
+              {label}
+            </NavLink>
+          ))}
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            className={cn("flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition", open ? "text-primary" : "text-foreground/60")}
+          >
+            <MoreHorizontal className="size-5" />
+            More
+          </button>
+        </div>
+      </nav>
     </div>
   );
 }

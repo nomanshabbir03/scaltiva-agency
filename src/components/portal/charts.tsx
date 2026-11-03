@@ -53,17 +53,19 @@ export function LineChart({ labels, series, caption }: { labels: string[]; serie
   return (
     <figure>
       <Legend items={series} />
-      <div className="relative mt-2">
+      {/* On phones the chart keeps a readable width and scrolls sideways. */}
+      <div className="mt-2 overflow-x-auto">
+      <div className="relative min-w-[520px]">
         <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={caption}>
           {ticks.map((t) => (
             <g key={t}>
               <line x1={pad.left} x2={W - pad.right} y1={y(t)} y2={y(t)} stroke={GRID} strokeWidth="1" />
-              <text x={pad.left - 8} y={y(t)} textAnchor="end" dominantBaseline="middle" fontSize="11" fill={AXIS_TEXT}>{t}</text>
+              <text x={pad.left - 8} y={y(t)} textAnchor="end" dominantBaseline="middle" fontSize="13" fill={AXIS_TEXT}>{t}</text>
             </g>
           ))}
           {labels.map((l, i) =>
             i % every === 0 || i === n - 1 ? (
-              <text key={l} x={x(i)} y={H - 10} textAnchor="middle" fontSize="11" fill={AXIS_TEXT}>{l}</text>
+              <text key={l} x={x(i)} y={H - 10} textAnchor="middle" fontSize="13" fill={AXIS_TEXT}>{l}</text>
             ) : null,
           )}
           {hover !== null && <line x1={x(hover)} x2={x(hover)} y1={pad.top} y2={H - pad.bottom} stroke={GRAY} strokeWidth="1" strokeDasharray="3 3" />}
@@ -108,6 +110,7 @@ export function LineChart({ labels, series, caption }: { labels: string[]; serie
           </div>
         )}
       </div>
+      </div>
       <figcaption className="sr-only">{caption}</figcaption>
       <table className="sr-only">
         <thead>
@@ -150,7 +153,7 @@ export function Donut({ value, total, label, remainderLabel }: { value: number; 
           </circle>
         )}
         <text x="100" y="96" textAnchor="middle" fontSize="30" fontWeight="600" fill="currentColor">{value}/{total}</text>
-        <text x="100" y="120" textAnchor="middle" fontSize="12" fill={AXIS_TEXT}>{label.toLowerCase()}</text>
+        <text x="100" y="120" textAnchor="middle" fontSize="14" fill={AXIS_TEXT}>{label.toLowerCase()}</text>
       </svg>
     </figure>
   );
@@ -170,7 +173,7 @@ export function PercentBars({ bars, caption }: { bars: { label: string; value: n
         {[0, 25, 50, 75, 100].map((t) => (
           <g key={t}>
             <line x1={pad.left} x2={W - pad.right} y1={y(t)} y2={y(t)} stroke={GRID} strokeWidth="1" />
-            <text x={pad.left - 8} y={y(t)} textAnchor="end" dominantBaseline="middle" fontSize="11" fill={AXIS_TEXT}>{t}%</text>
+            <text x={pad.left - 8} y={y(t)} textAnchor="end" dominantBaseline="middle" fontSize="13" fill={AXIS_TEXT}>{t}%</text>
           </g>
         ))}
         {bars.map((b, i) => {
@@ -188,8 +191,8 @@ export function PercentBars({ bars, caption }: { bars: { label: string; value: n
                   <title>{`${b.label}: ${b.value}%`}</title>
                 </path>
               )}
-              <text x={cx} y={top - 6} textAnchor="middle" fontSize="12" fontWeight="600" fill="currentColor">{b.value}%</text>
-              <text x={cx} y={H - 10} textAnchor="middle" fontSize="11" fill={AXIS_TEXT}>{b.label}</text>
+              <text x={cx} y={top - 6} textAnchor="middle" fontSize="14" fontWeight="600" fill="currentColor">{b.value}%</text>
+              <text x={cx} y={H - 10} textAnchor="middle" fontSize="13" fill={AXIS_TEXT}>{b.label}</text>
             </g>
           );
         })}

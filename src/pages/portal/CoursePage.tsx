@@ -158,9 +158,9 @@ export default function CoursePage() {
             <div className="mt-4 flex items-center justify-between gap-3">
               <button type="button" onClick={() => prev && open(prev)} disabled={!prev} className={secondaryButton}>
                 <ChevronLeft className="size-4" />
-                Previous
+                <span className="hidden sm:inline">Previous</span><span className="sm:hidden">Prev</span>
               </button>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-center text-xs text-muted-foreground sm:text-sm">
                 Lesson {index + 1} of {lessons.length}
               </span>
               <button type="button" onClick={() => next && open(next)} disabled={!next} className={secondaryButton}>

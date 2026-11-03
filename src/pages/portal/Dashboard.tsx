@@ -45,7 +45,7 @@ function Panel({ title, action, children }: { title: string; action?: ReactNode;
 // Icon + label tile used in the right-hand panels.
 function Tile({ icon: Icon, label, to }: { icon: typeof BookOpen; label: string; to: string }) {
   return (
-    <Link to={to} className="flex flex-col items-center gap-2 px-2 py-4 text-center text-sm text-foreground/70 transition hover:bg-accent hover:text-accent-foreground">
+    <Link to={to} className="flex flex-col items-center gap-2 px-1 py-3 text-center text-xs text-foreground/70 sm:px-2 sm:py-4 sm:text-sm transition hover:bg-accent hover:text-accent-foreground">
       <Icon className="size-6 text-primary" />
       {label}
     </Link>
