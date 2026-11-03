@@ -61,7 +61,7 @@ function ExerciseForm({ courseId, exercise, onSaved, onCancel }: {
         <label htmlFor={`${prefix}-instructions`} className={label}>Instructions</label>
         <textarea id={`${prefix}-instructions`} name="instructions" rows={5} maxLength={5000} defaultValue={exercise?.instructions ?? ""} className={`${input} resize-y `} />
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor={`${prefix}-due`} className={label}>Due date (optional)</label>
           <input id={`${prefix}-due`} name="due" type="datetime-local" defaultValue={toLocalInput(exercise?.due_at ?? null)} className={input} />

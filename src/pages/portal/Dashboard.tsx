@@ -33,7 +33,7 @@ function readDismissed(): string[] {
 function Panel({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
   return (
     <section className="overflow-hidden bg-background shadow-sm">
-      <div className="flex items-center justify-between gap-3 bg-primary px-5 py-3.5 text-primary-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 bg-primary px-4 py-3.5 text-primary-foreground sm:px-5">
         <h2 className="text-lg font-semibold">{title}</h2>
         {action}
       </div>
@@ -172,7 +172,7 @@ export default function Dashboard() {
         </div>
       ))}
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div className="space-y-5">
           <Panel
             title="My Courses"

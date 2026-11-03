@@ -114,7 +114,7 @@ export default function ProgressTimeline({ userId }: { userId: string }) {
         ))}
       </div>
 
-      <div role="tabpanel" className="mt-5 grid gap-5 lg:grid-cols-3">
+      <div role="tabpanel" className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-3">
         <Box title="Learning Activity (Lessons Watched)" className="lg:col-span-2">
           <LineChart
             labels={labels}

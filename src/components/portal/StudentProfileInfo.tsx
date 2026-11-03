@@ -50,7 +50,7 @@ export default function StudentProfileInfo({ studentId, name }: { studentId: str
       ) : details === null ? (
         <p className="mt-3 text-muted-foreground">The student hasn&apos;t filled in their profile yet.</p>
       ) : (
-        <dl className="mt-4 grid gap-x-6 gap-y-4 sm:grid-cols-2">
+        <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
           {rows.map(([name, value]) => (
             <div key={name}>
               <dt className="text-sm text-muted-foreground">{name}</dt>

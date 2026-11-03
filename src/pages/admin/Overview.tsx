@@ -119,7 +119,7 @@ export default function Overview() {
           <Loader2 className="size-6 animate-spin text-primary" />
         </div>
       ) : (
-        <div className="mt-4 grid gap-4 lg:grid-cols-3">
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
           <Panel title={`No activity (${data.inactive.length})`} note={`Enrolled students who haven't watched a lesson in ${INACTIVE_DAYS} days.`}>
             <People list={data.inactive} empty="Everyone has been active this week." />
           </Panel>

@@ -18,7 +18,7 @@ function QuestionList({ questions }: { questions: NewQuestion[] }) {
       {questions.map((q, i) => (
         <li key={i} className="border px-4 py-3">
           <p className="font-medium">{i + 1}. {q.question}</p>
-          <ul className="mt-2 grid gap-1 sm:grid-cols-2">
+          <ul className="mt-2 grid grid-cols-1 gap-1 sm:grid-cols-2">
             {q.options.map((o, j) => (
               <li key={j} className={cn("flex items-start gap-2 text-sm", j + 1 === q.correct_index ? "font-semibold text-green-700" : "text-foreground/80")}>
                 {j + 1 === q.correct_index ? <CheckCircle2 className="mt-0.5 size-4 shrink-0" /> : <span className="w-4 shrink-0 text-center text-muted-foreground">{optionLetter(j + 1)}</span>}

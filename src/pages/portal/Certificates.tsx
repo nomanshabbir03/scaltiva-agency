@@ -58,7 +58,7 @@ export default function Certificates() {
           <p className="mx-auto mt-2 max-w-md text-muted-foreground">Finish your course and Scaltiva will add your completion certificate here for you to download.</p>
         </div>
       ) : (
-        <ul className="mt-5 grid gap-5 sm:grid-cols-2">
+        <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
           {certs.map((c) => {
             const link = links[c.id];
             return (

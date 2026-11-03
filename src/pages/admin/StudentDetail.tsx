@@ -112,7 +112,7 @@ export default function StudentDetail() {
         <span className="font-medium text-foreground">{timeAgo(seen.activity)}</span>
       </p>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <form onSubmit={onSave} className={`${card} space-y-5`}>
           <h2 className="text-xl font-semibold">Details</h2>
           <div>

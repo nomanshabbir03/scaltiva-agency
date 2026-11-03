@@ -31,7 +31,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     <fieldset className="overflow-hidden border">
       <legend className="sr-only">{title}</legend>
       <p className="bg-muted px-5 py-2.5 text-sm font-semibold" aria-hidden>{title}</p>
-      <div className="grid gap-5 p-5 sm:grid-cols-2">{children}</div>
+      <div className="grid grid-cols-1 gap-5 p-5 sm:grid-cols-2">{children}</div>
     </fieldset>
   );
 }
@@ -141,7 +141,7 @@ export default function Profile() {
       {cropping && <AvatarCropper file={cropping} onCancel={() => setCropping(null)} onSave={savePhoto} />}
       <h1 className="text-2xl font-semibold">My Profile</h1>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
+      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
         <aside className="h-fit bg-background p-6 shadow-sm">
           <div className="text-center">
             <Avatar url={avatarUrl} name={profile?.full_name ?? ""} className="mx-auto size-28 border-4 border-accent text-3xl" />
@@ -247,7 +247,7 @@ export default function Profile() {
           <Section title="Interests">
             <div className="sm:col-span-2">
               <p className={label}>Where did you hear about us?</p>
-              <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
+              <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 {HEARD_FROM.map((h) => (
                   <label key={h} className="flex items-center gap-2 text-sm">
                     <input type="checkbox" name="heard_from" value={h} defaultChecked={details.heard_from.includes(h)} className="size-4 accent-[var(--primary)]" />

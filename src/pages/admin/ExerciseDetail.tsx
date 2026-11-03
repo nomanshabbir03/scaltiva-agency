@@ -36,7 +36,7 @@ function ReviewForm({ exercise, submission, onSaved }: { exercise: Exercise; sub
   }
 
   return (
-    <form onSubmit={onSubmit} className="mt-4 grid gap-4 border-t pt-4 sm:grid-cols-[140px_minmax(0,1fr)]">
+    <form onSubmit={onSubmit} className="mt-4 grid grid-cols-1 gap-4 border-t pt-4 sm:grid-cols-[140px_minmax(0,1fr)]">
       <div>
         <label htmlFor={`marks-${submission.id}`} className={label}>
           Marks{exercise.max_marks ? ` / ${exercise.max_marks}` : ""}

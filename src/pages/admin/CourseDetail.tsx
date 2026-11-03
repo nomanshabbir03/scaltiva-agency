@@ -96,7 +96,7 @@ export default function CourseDetail() {
         <PublishedBadge published={course.is_published} />
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
       <SectionCard title="Lessons" icon={PlayCircle} description="Watch, add, edit and reorder the videos." meta={`${lessons.length} lesson${lessons.length === 1 ? "" : "s"}`}>
         {lessons.length === 0 && editing !== "new" && <p className="mt-3 text-muted-foreground">No lessons yet. Add the first one.</p>}
 
