@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Chatbot from "@/components/Chatbot";
@@ -10,6 +10,7 @@ import WorkPage from "@/pages/WorkPage";
 import HowItWorksPage from "@/pages/HowItWorksPage";
 import Contact from "@/pages/Contact";
 import NotFound from "@/pages/NotFound";
+import InfoPage from "@/pages/InfoPage";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/portal/Dashboard";
 import Account from "@/pages/portal/Account";
@@ -118,6 +119,10 @@ export default function App() {
         <Route path="how-it-works" element={<HowItWorksPage />} />
         <Route path="contact" element={<Contact />} />
         <Route path="services/:slug" element={<ServicePage />} />
+        <Route path="privacy" element={<InfoPage slug="privacy" />} />
+        <Route path="terms" element={<InfoPage slug="terms" />} />
+        <Route path="faq" element={<InfoPage slug="faq" />} />
+        <Route path="careers" element={<Navigate to="/work" replace />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

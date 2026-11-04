@@ -19,6 +19,7 @@ export default function Home() {
       "@type": "Organization",
       name: SITE.name,
       url: SITE.url,
+      logo: `${SITE.url}/logo.png`,
       email: SITE.email,
       description: `${SITE.name} is a digital agency offering ${SERVICES.map((s) => s.name.toLowerCase()).join(", ")}.`,
     },
