@@ -65,7 +65,11 @@ export default function Login() {
   const message = error || notice;
 
   return (
-    <main id="main-content" className="grid min-h-screen place-items-center bg-muted px-4 py-12">
+    <main
+      id="main-content"
+      style={{ backgroundImage: "linear-gradient(rgba(0,0,0,.18), rgba(0,0,0,.18)), url('/images/login-bg.webp')" }}
+      className="fixed inset-0 flex items-center justify-center overflow-y-auto bg-cover bg-left-bottom bg-no-repeat px-4 py-6 [scrollbar-width:none] lg:justify-end lg:px-[8vw] [&::-webkit-scrollbar]:hidden"
+    >
       <meta name="robots" content="noindex" />
       <title>Student login | Scaltiva</title>
       <div className="w-full max-w-md">
@@ -105,11 +109,11 @@ export default function Login() {
               {lockedFor > 0 ? `Try again in ${lockedFor}s` : "Sign in"}
             </button>
           </form>
-        </div>
 
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Forgot your password? Contact Scaltiva and we&apos;ll reset it.
-        </p>
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            Forgot your password? Contact Scaltiva and we&apos;ll reset it.
+          </p>
+        </div>
       </div>
     </main>
   );
