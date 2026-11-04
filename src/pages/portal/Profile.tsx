@@ -185,7 +185,7 @@ export default function Profile() {
           <Section title="Personal Information">
             <div className="sm:col-span-2">
               <p className={label}>Full name</p>
-              <p className="mt-2 rounded-full bg-muted px-5 py-3.5">{profile?.full_name}</p>
+              <p className="mt-2 bg-muted px-5 py-3.5">{profile?.full_name}</p>
               <p className="mt-1.5 text-xs text-muted-foreground">To change your name, contact Scaltiva.</p>
             </div>
 

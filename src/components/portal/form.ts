@@ -1,6 +1,6 @@
 // Shared form styles for the login, portal and admin pages (same look as the contact form).
 export const input =
-  "mt-2 w-full rounded-full border bg-background px-5 py-3.5 text-base outline-none transition placeholder:text-muted-foreground/60 focus:border-primary focus:ring-2 focus:ring-ring/30";
+  "mt-2 w-full rounded-none border bg-background px-5 py-3.5 text-base outline-none transition placeholder:text-muted-foreground/60 focus:border-primary focus:ring-2 focus:ring-ring/30";
 export const label = "text-sm font-medium";
 export const card = "bg-background p-5 shadow-xl shadow-primary/5 sm:p-8";
 export const errorBox = "bg-red-50 px-4 py-3 text-sm text-red-700";
