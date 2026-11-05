@@ -237,6 +237,20 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-5">
+          <Panel title="How to Use the Portal">
+            <div className="aspect-video overflow-hidden bg-muted">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/axUx5R6kxk4"
+                title="How to use the Scaltiva student portal"
+                loading="lazy"
+                allow="accelerometer; encrypted-media; picture-in-picture"
+                allowFullScreen
+                className="size-full border-0"
+              />
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">New here? Watch this short guide to learn how to use your courses, exercises and quizzes.</p>
+          </Panel>
+
           <Panel title="My Progress">
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className="bg-muted/60 px-2 py-4">
