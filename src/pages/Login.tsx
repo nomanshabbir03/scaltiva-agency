@@ -74,9 +74,7 @@ export default function Login() {
       <title>Student login | Scaltiva</title>
       <div className="w-full max-w-md">
         <Link to="/" className="mx-auto flex w-fit items-center gap-3" aria-label="Scaltiva home">
-          <span className="grid size-10 place-items-center rounded-full bg-primary text-xl font-bold text-primary-foreground">
-            S
-          </span>
+          <img src="/logo.png" alt="" className="size-10 object-contain" />
           <span className="text-2xl font-light uppercase tracking-[0.2em]">Scaltiva</span>
         </Link>
 

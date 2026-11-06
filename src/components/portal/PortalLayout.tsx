@@ -69,7 +69,7 @@ export default function PortalLayout() {
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
           <Link to="/portal" className="flex items-center gap-2" aria-label="Portal home">
-            <span className="grid size-9 place-items-center rounded-full bg-primary text-lg font-bold text-primary-foreground">S</span>
+            <img src="/logo.png" alt="" className="size-9 object-contain" />
             <span className="hidden text-lg font-light uppercase tracking-[0.2em] sm:inline">Scaltiva</span>
           </Link>
           <p className="mx-auto hidden text-lg font-semibold md:block">Student Portal</p>
