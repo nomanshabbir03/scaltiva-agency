@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { homeFor, useAuth } from "@/lib/auth";
 import { PageLoader } from "@/components/portal/RequireRole";
@@ -20,6 +20,7 @@ export default function Login() {
   const location = useLocation();
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [failures, setFailures] = useState(0);
   const [lockedFor, setLockedFor] = useState(0);
 
@@ -89,7 +90,17 @@ export default function Login() {
             </div>
             <div>
               <label htmlFor="password" className={label}>Password</label>
-              <input id="password" name="password" type="password" required autoComplete="current-password" className={field} />
+              <div className="relative">
+                <input id="password" name="password" type={showPassword ? "text" : "password"} required autoComplete="current-password" className={cn(field, "pr-12")} />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3 top-1/2 mt-1 -translate-y-1/2 text-muted-foreground transition hover:text-primary"
+                >
+                  {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+                </button>
+              </div>
             </div>
 
             {message && (
