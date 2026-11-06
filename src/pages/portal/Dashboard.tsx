@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { Award, BarChart3, ListChecks, BookOpen, ClipboardList, CheckCircle2, KeyRound, Loader2, Megaphone, NotebookPen, PlayCircle, TrendingUp, UserRound, X } from "lucide-react";
+import { Award, BarChart3, Headset, ListChecks, BookOpen, ClipboardList, CheckCircle2, KeyRound, Loader2, Megaphone, NotebookPen, PlayCircle, TrendingUp, UserRound, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import Avatar from "@/components/portal/Avatar";
@@ -293,6 +293,7 @@ export default function Dashboard() {
               <Tile icon={ListChecks} label="Quizzes" to="/portal/quizzes" />
               <Tile icon={Award} label="Certificates" to="/portal/certificates" />
               <Tile icon={NotebookPen} label="My notes" to="/portal/notes" />
+              <Tile icon={Headset} label="Online support" to="/portal/support" />
             </div>
           </Panel>
 

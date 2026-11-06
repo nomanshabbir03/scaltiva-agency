@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import { Award, ClipboardList, ListChecks, Globe, Home, KeyRound, LogOut, Menu, MoreHorizontal, NotebookPen, TrendingUp, UserRound, X } from "lucide-react";
+import { Award, ClipboardList, ListChecks, Globe, Headset, Home, KeyRound, LogOut, Menu, MoreHorizontal, NotebookPen, TrendingUp, UserRound, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import Avatar from "@/components/portal/Avatar";
 import { cn } from "@/lib/utils";
@@ -26,6 +26,7 @@ const LINKS = [
   { to: "/portal/quizzes", label: "Quizzes", icon: ListChecks, end: false },
   { to: "/portal/certificates", label: "Certificates", icon: Award, end: false },
   { to: "/portal/notes", label: "My notes", icon: NotebookPen, end: false },
+  { to: "/portal/support", label: "Online support", icon: Headset, end: false },
   { to: "/portal/profile", label: "My profile", icon: UserRound, end: false },
   { to: "/portal/account", label: "Password", icon: KeyRound, end: false },
 ];

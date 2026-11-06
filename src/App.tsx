@@ -22,6 +22,8 @@ import ExercisePage from "@/pages/portal/ExercisePage";
 import ExerciseDetail from "@/pages/admin/ExerciseDetail";
 import Reviews from "@/pages/admin/Reviews";
 import Messages from "@/pages/admin/Messages";
+import AdminSupport from "@/pages/admin/Support";
+import Support from "@/pages/portal/Support";
 import Insights from "@/pages/admin/Insights";
 import QuizDetail from "@/pages/admin/QuizDetail";
 import Quizzes from "@/pages/portal/Quizzes";
@@ -90,6 +92,7 @@ export default function App() {
           <Route path="quizzes" element={<Quizzes />} />
           <Route path="quizzes/:id" element={<QuizPage />} />
           <Route path="certificates" element={<Certificates />} />
+          <Route path="support" element={<Support />} />
           <Route path="account" element={<Account />} />
         </Route>
       </Route>
@@ -105,6 +108,7 @@ export default function App() {
           <Route path="exercises/:id" element={<ExerciseDetail />} />
           <Route path="reviews" element={<Reviews />} />
           <Route path="messages" element={<Messages />} />
+          <Route path="support" element={<AdminSupport />} />
           <Route path="insights" element={<Insights />} />
           <Route path="quizzes/:id" element={<QuizDetail />} />
           <Route path="notes" element={<Notes />} />
