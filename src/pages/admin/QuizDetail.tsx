@@ -5,10 +5,12 @@ import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { downloadCsv, fileName } from "@/lib/csv";
 import { downloadQuizTemplate, optionLetter, parseQuestions, type NewQuestion } from "@/lib/quizCsv";
+import { FILE_ACCEPT, MAX_FILE_MB, removeFile, uploadFile } from "@/lib/files";
+import FileDownload from "@/components/portal/FileDownload";
 import { card, errorBox, primaryButton, secondaryButton } from "@/components/portal/form";
 import { useToast } from "@/components/portal/Toast";
 
-type Quiz = { id: string; course_id: string; title: string; description: string | null; courses: { title: string } | null };
+type Quiz = { id: string; course_id: string; title: string; description: string | null; attachment_path: string | null; attachment_name: string | null; courses: { title: string } | null };
 type Question = NewQuestion & { id: string; position: number };
 type Attempt = { id: string; user_id: string; score: number; total: number; submitted_at: string; profiles: { full_name: string; email: string } | null };
 
@@ -44,7 +46,7 @@ export default function QuizDetail() {
 
   useEffect(() => {
     Promise.all([
-      supabase.from("quizzes").select("id, course_id, title, description, courses(title)").eq("id", id).maybeSingle(),
+      supabase.from("quizzes").select("id, course_id, title, description, attachment_path, attachment_name, courses(title)").eq("id", id).maybeSingle(),
       supabase.from("quiz_questions").select("id, position, question, options, correct_index").eq("quiz_id", id).order("position").order("id"),
       supabase.from("quiz_attempts").select("id, user_id, score, total, submitted_at, profiles(full_name, email)").eq("quiz_id", id).order("submitted_at", { ascending: false }),
     ]).then(([q, qs, a]) => {
@@ -79,6 +81,33 @@ export default function QuizDetail() {
     setQuestions(((data as Question[] | null) ?? []).sort((a, b) => a.position - b.position));
     setPreview(null);
     toast(`${preview.questions.length} questions saved.`);
+  }
+
+  async function onAttachment(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !quiz) return;
+    setSaving(true);
+    try {
+      const up = await uploadFile(`materials/${id}`, file);
+      const { error } = await supabase.from("quizzes").update({ attachment_path: up.path, attachment_name: up.name }).eq("id", id);
+      if (error) throw new Error("Couldn't save the file. Please try again.");
+      await removeFile(quiz.attachment_path);
+      setQuiz({ ...quiz, attachment_path: up.path, attachment_name: up.name });
+      toast("Quiz file uploaded.");
+    } catch (err) {
+      toast((err as Error).message, "error");
+    }
+    setSaving(false);
+  }
+
+  async function removeAttachment() {
+    if (!quiz?.attachment_path) return;
+    const { error } = await supabase.from("quizzes").update({ attachment_path: null, attachment_name: null }).eq("id", id);
+    if (error) return toast("Couldn't remove the file. Please try again.", "error");
+    await removeFile(quiz.attachment_path);
+    setQuiz({ ...quiz, attachment_path: null, attachment_name: null });
+    toast("File removed.");
   }
 
   async function deleteQuiz() {
@@ -130,6 +159,27 @@ export default function QuizDetail() {
         </button>
       </div>
       {quiz.description && <p className="mt-3 whitespace-pre-line text-foreground/80">{quiz.description}</p>}
+
+      <section className={`${card} mt-6`}>
+        <h2 className="text-xl font-semibold">Quiz file</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Optionally attach a document (PDF, Word, Excel, CSV...) up to {MAX_FILE_MB} MB. Students can download it from the quiz page.
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          {quiz.attachment_path && quiz.attachment_name && <FileDownload path={quiz.attachment_path} name={quiz.attachment_name} />}
+          <label className={`${secondaryButton} cursor-pointer`}>
+            <Upload className="size-4" />
+            {quiz.attachment_path ? "Replace file" : "Upload file"}
+            <input type="file" accept={FILE_ACCEPT} onChange={onAttachment} disabled={saving} className="sr-only" />
+          </label>
+          {quiz.attachment_path && (
+            <button type="button" onClick={removeAttachment} className={`${secondaryButton} hover:border-red-300 hover:text-red-600`}>
+              <Trash2 className="size-4" />
+              Remove
+            </button>
+          )}
+        </div>
+      </section>
 
       <section className={`${card} mt-6`}>
         <h2 className="text-xl font-semibold">Upload questions</h2>

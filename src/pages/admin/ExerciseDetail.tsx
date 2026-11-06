@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { STATUS_CLASS, STATUS_LABEL, exerciseStatus, formatDue, type Exercise, type Submission } from "@/lib/exercises";
 import { card, input, label, primaryButton, secondaryButton } from "@/components/portal/form";
 import { downloadCsv, fileName } from "@/lib/csv";
+import FileDownload from "@/components/portal/FileDownload";
 import { useToast } from "@/components/portal/Toast";
 
 type Student = { user_id: string; profiles: { full_name: string; email: string } | null };
@@ -140,6 +141,9 @@ export default function ExerciseDetail() {
         Due: {formatDue(exercise.due_at)}
         {exercise.max_marks ? ` · ${exercise.max_marks} marks` : ""} · {submittedCount}/{students.length} submitted
       </p>
+      {exercise.attachment_path && exercise.attachment_name && (
+        <div className="mt-6"><FileDownload path={exercise.attachment_path} name={exercise.attachment_name} label={`Assignment file: ${exercise.attachment_name}`} /></div>
+      )}
       {exercise.instructions && <p className={`${card} mt-6 whitespace-pre-line`}>{exercise.instructions}</p>}
 
       <section className={`${card} mt-6`}>
@@ -187,6 +191,7 @@ export default function ExerciseDetail() {
                   {sub && expanded && (
                     <div className="px-4 pb-4">
                       {sub.answer && <p className="whitespace-pre-line bg-muted/60 p-4 text-sm">{sub.answer}</p>}
+                      {sub.file_path && sub.file_name && <div className="mt-3"><FileDownload path={sub.file_path} name={sub.file_name} label={`Download submission: ${sub.file_name}`} /></div>}
                       {sub.link && (
                         <a href={sub.link} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 break-all text-sm font-semibold text-primary hover:underline">
                           {sub.link}

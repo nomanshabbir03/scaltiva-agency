@@ -6,9 +6,10 @@ import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { optionLetter } from "@/lib/quizCsv";
 import { card, primaryButton, secondaryButton } from "@/components/portal/form";
+import FileDownload from "@/components/portal/FileDownload";
 import { useToast } from "@/components/portal/Toast";
 
-type Quiz = { id: string; title: string; description: string | null; courses: { title: string } | null };
+type Quiz = { id: string; title: string; description: string | null; attachment_path: string | null; attachment_name: string | null; courses: { title: string } | null };
 type Question = { id: string; question: string; options: string[] };
 type Attempt = { answers: (number | null)[]; score: number; total: number; submitted_at: string };
 
@@ -33,7 +34,7 @@ export default function QuizPage() {
   useEffect(() => {
     if (!profile) return;
     Promise.all([
-      supabase.from("quizzes").select("id, title, description, courses(title)").eq("id", id).maybeSingle(),
+      supabase.from("quizzes").select("id, title, description, attachment_path, attachment_name, courses(title)").eq("id", id).maybeSingle(),
       // Questions come without the answers; the database keeps those until you submit.
       supabase.rpc("get_quiz_questions", { p_quiz: id }),
       supabase.from("quiz_attempts").select("answers, score, total, submitted_at").eq("quiz_id", id).eq("user_id", profile.id).maybeSingle(),
@@ -164,6 +165,9 @@ export default function QuizPage() {
         {header}
         <div className={`${card} mt-5`}>
           {quiz.description && <p className="whitespace-pre-line">{quiz.description}</p>}
+          {quiz.attachment_path && quiz.attachment_name && (
+            <div className="mt-4"><FileDownload path={quiz.attachment_path} name={quiz.attachment_name} label={`Download quiz file: ${quiz.attachment_name}`} /></div>
+          )}
           <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-muted-foreground">
             <li>{questions.length} multiple-choice questions, shown one at a time.</li>
             <li>You can go back and change answers before submitting.</li>
