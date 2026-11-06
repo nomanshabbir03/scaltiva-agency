@@ -30,10 +30,8 @@ export default function AdminLayout() {
       <header className="sticky top-0 z-20 border-b bg-background">
         <div className="flex items-center justify-between gap-4 px-4 py-3 lg:px-6">
           <Link to="/admin" className="flex items-center gap-2" aria-label="Admin overview">
-            <span className="grid size-9 place-items-center rounded-full bg-primary text-lg font-bold text-primary-foreground">
-              S
-            </span>
-            <span className="text-lg font-light uppercase tracking-[0.2em]">Admin</span>
+            <img src="/logo.png" alt="" className="size-9 object-contain" />
+            <span className="text-lg font-light uppercase tracking-[0.2em]">Scaltiva <span className="font-semibold text-primary">Admin</span></span>
           </Link>
           <div className="flex items-center gap-4">
             <span className="hidden text-sm text-muted-foreground sm:inline">{profile?.email}</span>
