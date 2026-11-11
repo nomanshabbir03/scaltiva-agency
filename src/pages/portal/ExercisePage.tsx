@@ -29,7 +29,8 @@ export default function ExercisePage() {
     ]).then(([e, s]) => {
       setExercise(e.data as (Exercise & { courses: { title: string } | null }) | null);
       setSubmission(s.data as Submission | null);
-      if (e.data) markSeen(profile.id, [id]);
+      // Opening it clears the dot for the exercise and for any new marks/feedback.
+      if (e.data) markSeen(profile.id, s.data ? [id, (s.data as Submission).id] : [id]);
     });
   }, [id, profile]);
 

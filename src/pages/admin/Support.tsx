@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { timeAgo } from "@/lib/activity";
 import { card, secondaryButton } from "@/components/portal/form";
 import { useToast } from "@/components/portal/Toast";
+import { useAuth } from "@/lib/auth";
+import { NewDot, markSeen, useUnseen } from "@/lib/seen";
 
 type Query = {
   id: string;
@@ -22,6 +24,13 @@ export default function Support() {
   const [rows, setRows] = useState<Query[] | null>(null);
   const [openOnly, setOpenOnly] = useState(true);
   const [open, setOpen] = useState<string | null>(null);
+  const { profile } = useAuth();
+  const unseen = new Set(useUnseen().map((u) => u.id));
+
+  // Opening a query clears its "new" dot.
+  useEffect(() => {
+    if (profile && open) markSeen(profile.id, [open]);
+  }, [profile, open]);
 
   useEffect(() => {
     supabase
@@ -93,6 +102,7 @@ export default function Support() {
                         {q.profiles?.full_name} · {q.topic}
                       </p>
                     </div>
+                    {unseen.has(q.id) && <NewDot />}
                     {q.is_resolved && <span className="rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-semibold text-green-700">Resolved</span>}
                     <span className="shrink-0 text-sm text-muted-foreground">{timeAgo(q.created_at)}</span>
                     <ChevronDown className={cn("size-4 shrink-0 transition", expanded && "rotate-180")} />

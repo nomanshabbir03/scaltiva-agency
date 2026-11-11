@@ -13,7 +13,8 @@ export default function Exercises() {
   const { profile } = useAuth();
   const [rows, setRows] = useState<Row[] | null>(null);
   const [submissions, setSubmissions] = useState<Record<string, Submission>>({});
-  const unseen = new Set(useUnseen().map((u) => u.id));
+  // New exercise, or newly marked work.
+  const unseen = new Set(useUnseen().map((u) => u.exerciseId));
 
   useEffect(() => {
     if (!profile) return;

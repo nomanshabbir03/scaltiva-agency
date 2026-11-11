@@ -26,7 +26,8 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 export default function AdminLayout() {
   const { profile } = useAuth();
   const unseen = useUnseen();
-  const dotFor = (to: string) => (to === "/admin/reviews" && unseen.length > 0 ? <NewDot className="absolute -right-1 -top-1" /> : null);
+  const kindFor: Record<string, string> = { "/admin/reviews": "submission", "/admin/support": "support" };
+  const dotFor = (to: string) => (unseen.some((u) => u.kind === kindFor[to]) ? <NewDot className="absolute -right-1 -top-1" /> : null);
   return (
     <div className="min-h-screen bg-muted">
       <meta name="robots" content="noindex" />
