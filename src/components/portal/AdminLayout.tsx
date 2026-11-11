@@ -3,6 +3,7 @@ import { BarChart3, BookOpen, ClipboardCheck, Headset, Inbox, LayoutDashboard, N
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { LogoutButton } from "@/components/portal/PortalLayout";
+import { NewDot, useUnseen } from "@/lib/seen";
 
 const LINKS = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
@@ -24,6 +25,8 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 // Admin area: sidebar on large screens, a scrollable row of links on phones.
 export default function AdminLayout() {
   const { profile } = useAuth();
+  const unseen = useUnseen();
+  const dotFor = (to: string) => (to === "/admin/reviews" && unseen.length > 0 ? <NewDot className="absolute -right-1 -top-1" /> : null);
   return (
     <div className="min-h-screen bg-muted">
       <meta name="robots" content="noindex" />
@@ -41,7 +44,10 @@ export default function AdminLayout() {
         <nav aria-label="Admin" className="flex gap-2 overflow-x-auto border-t px-4 py-2 lg:hidden">
           {LINKS.map(({ to, label, icon: Icon, end }) => (
             <NavLink key={to} to={to} end={end} className={linkClass}>
-              <Icon className="size-4" />
+              <span className="relative">
+                <Icon className="size-4" />
+                {dotFor(to)}
+              </span>
               {label}
             </NavLink>
           ))}
@@ -52,7 +58,10 @@ export default function AdminLayout() {
         <nav aria-label="Admin" className="sticky top-[61px] hidden h-[calc(100vh-61px)] w-60 shrink-0 space-y-1 border-r bg-background p-4 lg:block">
           {LINKS.map(({ to, label, icon: Icon, end }) => (
             <NavLink key={to} to={to} end={end} className={linkClass}>
-              <Icon className="size-4" />
+              <span className="relative">
+                <Icon className="size-4" />
+                {dotFor(to)}
+              </span>
               {label}
             </NavLink>
           ))}

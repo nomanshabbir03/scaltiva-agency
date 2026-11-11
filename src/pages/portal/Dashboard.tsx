@@ -4,6 +4,7 @@ import { Award, BarChart3, Headset, ListChecks, BookOpen, ClipboardList, CheckCi
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import Avatar from "@/components/portal/Avatar";
+import { markSeen } from "@/lib/seen";
 
 type Course = {
   id: string;
@@ -67,7 +68,7 @@ export default function Dashboard() {
   const [courses, setCourses] = useState<Course[] | null>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [loadError, setLoadError] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [dismissed, setDismissed] = useState<string[]>(readDismissed);
 
@@ -79,11 +80,17 @@ export default function Dashboard() {
       supabase.from("lesson_progress").select("lesson_id, completed, updated_at").eq("user_id", profile.id),
       // RLS only returns announcements for this student's enrolled, published courses.
       supabase.from("announcements").select("id, title, body, created_at, courses(title)").order("created_at", { ascending: false }).limit(10),
-    ]).then(([c, p, a]) => {
+      // The welcome note is shown once, on the first visit after being enrolled.
+      supabase.from("seen_items").select("item_id").eq("item_id", profile.id).maybeSingle(),
+    ]).then(([c, p, a, w]) => {
       setAnnouncements(((a.data ?? []) as unknown as Announcement[]).filter((x) => x.courses));
       if (c.error) return setLoadError(true);
       setCourses((c.data as Course[] | null) ?? []);
       setRows((p.data as Row[] | null) ?? []);
+      if (!w.error && !w.data && c.data?.length) {
+        setShowWelcome(true);
+        markSeen(profile.id, [profile.id]);
+      }
     });
   }, [profile]);
 
@@ -146,7 +153,7 @@ export default function Dashboard() {
             <Avatar url={avatarUrl} name={profile?.full_name ?? ""} className="size-11 border-2 border-background text-sm" />
           </Link>
           <p className="flex-1">
-            Welcome back, <strong>{profile?.full_name}</strong>.{" "}
+            Welcome, <strong>{profile?.full_name}</strong>.{" "}
             {current.length > 0
               ? `You have ${current.length} course${current.length === 1 ? "" : "s"} in progress.`
               : courses.length > 0

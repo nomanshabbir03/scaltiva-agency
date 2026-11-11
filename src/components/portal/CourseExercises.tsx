@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { NewDot, useUnseen } from "@/lib/seen";
 import { Link } from "react-router-dom";
 import { ClipboardList, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -118,6 +119,8 @@ export default function CourseExercises({ courseId }: { courseId: string }) {
   const toast = useToast();
   const [rows, setRows] = useState<Row[] | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
+  // Exercises with a submission the admin hasn't opened yet.
+  const unseen = new Set(useUnseen().map((u) => u.exerciseId));
 
   useEffect(() => {
     supabase
@@ -166,7 +169,10 @@ export default function CourseExercises({ courseId }: { courseId: string }) {
                 <li key={row.id} className="flex items-center gap-3 border px-4 py-3">
                   <ClipboardList className="size-5 shrink-0 text-primary" />
                   <Link to={`/admin/exercises/${row.id}`} className="min-w-0 flex-1 hover:text-primary">
-                    <p className="truncate font-medium">{row.title}</p>
+                    <p className="flex items-center gap-2 font-medium">
+                      <span className="truncate">{row.title}</span>
+                      {unseen.has(row.id) && <NewDot />}
+                    </p>
                     <p className="text-sm text-muted-foreground">
                       Due: {formatDue(row.due_at)} · {row.exercise_submissions[0]?.count ?? 0} submitted
                     </p>

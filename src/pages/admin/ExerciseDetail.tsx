@@ -8,6 +8,8 @@ import { card, input, label, primaryButton, secondaryButton } from "@/components
 import { downloadCsv, fileName } from "@/lib/csv";
 import FileDownload from "@/components/portal/FileDownload";
 import { useToast } from "@/components/portal/Toast";
+import { useAuth } from "@/lib/auth";
+import { NewDot, markSeen, useUnseen } from "@/lib/seen";
 
 type Student = { user_id: string; profiles: { full_name: string; email: string } | null };
 
@@ -66,6 +68,14 @@ export default function ExerciseDetail() {
   // Arriving from the review queue opens that student's submission straight away.
   const [searchParams] = useSearchParams();
   const [open, setOpen] = useState<string | null>(searchParams.get("student"));
+  const { profile } = useAuth();
+  const unseen = new Set(useUnseen().map((u) => u.id));
+  const openSub = open ? submissions[open] : undefined;
+
+  // Opening a submission clears its "new" dot.
+  useEffect(() => {
+    if (profile && openSub) markSeen(profile.id, [openSub.id]);
+  }, [profile, openSub?.id, openSub?.submitted_at]);
 
   useEffect(() => {
     supabase
@@ -174,7 +184,10 @@ export default function ExerciseDetail() {
                     className="flex w-full items-center gap-3 px-4 py-3 text-left disabled:cursor-default"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-medium">{st.profiles?.full_name}</p>
+                      <p className="flex items-center gap-2 font-medium">
+                        <span className="truncate">{st.profiles?.full_name}</span>
+                        {sub && unseen.has(sub.id) && <NewDot />}
+                      </p>
                       <p className="truncate text-sm text-muted-foreground">
                         {sub ? `Submitted ${new Date(sub.submitted_at).toLocaleString()}` : st.profiles?.email}
                       </p>

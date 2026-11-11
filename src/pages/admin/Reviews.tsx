@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { CheckCircle2, ChevronRight, ClipboardCheck, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { card } from "@/components/portal/form";
+import { NewDot, useUnseen } from "@/lib/seen";
 
 type Row = {
   id: string;
@@ -21,6 +22,7 @@ const daysAgo = (iso: string) => {
 // Every submission still waiting for marks, across all courses, oldest first.
 export default function Reviews() {
   const [rows, setRows] = useState<Row[] | null>(null);
+  const unseen = new Set(useUnseen().map((u) => u.id));
 
   useEffect(() => {
     supabase
@@ -63,6 +65,7 @@ export default function Reviews() {
                       {r.exercises?.title} · {r.exercises?.courses?.title}
                     </p>
                   </div>
+                  {unseen.has(r.id) && <NewDot />}
                   <span className="shrink-0 text-sm text-muted-foreground">{daysAgo(r.submitted_at)}</span>
                   <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                 </Link>

@@ -4,6 +4,7 @@ import { ChevronRight, ClipboardList, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { NewDot, useUnseen } from "@/lib/seen";
 import { STATUS_CLASS, STATUS_LABEL, exerciseStatus, formatDue, type Exercise, type Submission } from "@/lib/exercises";
 
 type Row = Exercise & { courses: { title: string } | null };
@@ -12,6 +13,7 @@ export default function Exercises() {
   const { profile } = useAuth();
   const [rows, setRows] = useState<Row[] | null>(null);
   const [submissions, setSubmissions] = useState<Record<string, Submission>>({});
+  const unseen = new Set(useUnseen().map((u) => u.id));
 
   useEffect(() => {
     if (!profile) return;
@@ -61,7 +63,10 @@ export default function Exercises() {
                     <Link to={`/portal/exercises/${x.id}`} className="flex items-center gap-3 px-5 py-4 transition hover:bg-accent">
                       <ClipboardList className="size-5 shrink-0 text-primary" />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium">{x.title}</p>
+                        <p className="flex items-center gap-2 font-medium">
+                          <span className="truncate">{x.title}</span>
+                          {unseen.has(x.id) && <NewDot />}
+                        </p>
                         <p className="text-sm text-muted-foreground">Due: {formatDue(x.due_at)}</p>
                       </div>
                       {sub?.marks != null && (

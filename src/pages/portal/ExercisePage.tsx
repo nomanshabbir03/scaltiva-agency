@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink, Loader2, MessageSquareText } from "lucide-reac
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { markSeen } from "@/lib/seen";
 import { STATUS_CLASS, STATUS_LABEL, exerciseStatus, formatDue, type Exercise, type Submission } from "@/lib/exercises";
 import { FILE_ACCEPT, MAX_FILE_MB, removeFile, uploadFile } from "@/lib/files";
 import FileDownload from "@/components/portal/FileDownload";
@@ -28,6 +29,7 @@ export default function ExercisePage() {
     ]).then(([e, s]) => {
       setExercise(e.data as (Exercise & { courses: { title: string } | null }) | null);
       setSubmission(s.data as Submission | null);
+      if (e.data) markSeen(profile.id, [id]);
     });
   }, [id, profile]);
 

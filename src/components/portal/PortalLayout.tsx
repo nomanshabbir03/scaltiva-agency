@@ -4,6 +4,7 @@ import { Award, ClipboardList, ListChecks, Globe, Headset, Home, KeyRound, LogOu
 import { useAuth } from "@/lib/auth";
 import Avatar from "@/components/portal/Avatar";
 import { cn } from "@/lib/utils";
+import { NewDot, useUnseen } from "@/lib/seen";
 
 export function LogoutButton() {
   const { signOut } = useAuth();
@@ -51,6 +52,9 @@ export default function PortalLayout() {
   const { profile, avatarUrl } = useAuth();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
+  const unseen = useUnseen();
+  // Orange dot on a nav item while something inside it is new.
+  const dotFor = (to: string) => (to === "/portal/exercises" && unseen.length > 0 ? <NewDot className="absolute -right-1 -top-1" /> : null);
 
   // Close the menu after navigating.
   useEffect(() => setOpen(false), [pathname]);
@@ -104,7 +108,10 @@ export default function PortalLayout() {
                 cn(itemClass, isActive ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:bg-accent hover:text-accent-foreground")
               }
             >
-              <Icon className="size-5 shrink-0" />
+              <span className="relative shrink-0">
+                <Icon className="size-5" />
+                {dotFor(to)}
+              </span>
               <span className={open ? "" : "sr-only"}>{label}</span>
             </NavLink>
           ))}
@@ -140,7 +147,10 @@ export default function PortalLayout() {
                 cn("flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition", isActive ? "text-primary" : "text-foreground/60")
               }
             >
-              <Icon className="size-5" />
+              <span className="relative">
+                <Icon className="size-5" />
+                {dotFor(to)}
+              </span>
               {label}
             </NavLink>
           ))}
