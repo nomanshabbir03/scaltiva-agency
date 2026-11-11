@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { Award, BarChart3, Headset, ListChecks, BookOpen, ClipboardList, CheckCircle2, KeyRound, Loader2, Megaphone, NotebookPen, PlayCircle, TrendingUp, UserRound, X } from "lucide-react";
+import { Award, BarChart3, Headset, ListChecks, BookOpen, ClipboardList, CheckCircle2, ChevronDown, KeyRound, Loader2, Megaphone, NotebookPen, PlayCircle, TrendingUp, UserRound, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import Avatar from "@/components/portal/Avatar";
@@ -244,7 +244,13 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-5">
-          <Panel title="How to Use the Portal">
+          {/* Collapsed by default; the video only loads once opened. */}
+          <details className="group overflow-hidden bg-background shadow-sm">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 bg-primary px-4 py-3.5 text-primary-foreground sm:px-5 [&::-webkit-details-marker]:hidden">
+              <h2 className="text-lg font-semibold">How to Use the Portal</h2>
+              <ChevronDown className="size-5 shrink-0 transition group-open:rotate-180" />
+            </summary>
+            <div className="p-4">
             <div className="aspect-video overflow-hidden bg-muted">
               <iframe
                 src="https://www.youtube-nocookie.com/embed/axUx5R6kxk4"
@@ -256,7 +262,8 @@ export default function Dashboard() {
               />
             </div>
             <p className="mt-2 text-sm text-muted-foreground">New here? Watch this short guide to learn how to use your courses, exercises and quizzes.</p>
-          </Panel>
+            </div>
+          </details>
 
           <Panel title="My Progress">
             <div className="grid grid-cols-3 gap-2 text-center">
