@@ -16,8 +16,18 @@ export async function uploadFile(folder: string, file: File): Promise<StoredFile
   return { path, name: file.name };
 }
 
-export async function removeFile(path: string | null | undefined) {
-  if (path) await supabase.storage.from(BUCKET).remove([path]);
+// Uploads several files; stops at the first failure.
+export async function uploadFiles(folder: string, files: File[]): Promise<StoredFile[]> {
+  const out: StoredFile[] = [];
+  for (const f of files) out.push(await uploadFile(folder, f));
+  return out;
+}
+
+// The non-empty files picked in a <input type="file" multiple name=...>.
+export const pickedFiles = (form: FormData, name: string) => (form.getAll(name) as File[]).filter((f) => f && f.size);
+
+export async function removeFiles(files: StoredFile[]) {
+  if (files.length) await supabase.storage.from(BUCKET).remove(files.map((f) => f.path));
 }
 
 // Opens a short-lived signed link that downloads the file with its original name.

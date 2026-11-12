@@ -16,7 +16,7 @@ type Course = {
 
 type Row = { lesson_id: string; completed: boolean; updated_at: string };
 
-type Announcement = { id: string; title: string; body: string; created_at: string; courses: { title: string } | null };
+type Announcement = { id: string; title: string; body: string; created_at: string; user_id: string | null; courses: { title: string } | null };
 
 const NEW_FOR_MS = 7 * 24 * 60 * 60 * 1000;
 const DISMISSED_KEY = "scaltiva-dismissed-announcements";
@@ -71,6 +71,12 @@ export default function Dashboard() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [dismissed, setDismissed] = useState<string[]>(readDismissed);
+  const [guideVideo, setGuideVideo] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.from("portal_settings").select("value").eq("key", "guide_video").maybeSingle()
+      .then(({ data }) => setGuideVideo(data?.value ?? null));
+  }, []);
 
   useEffect(() => {
     if (!profile) return;
@@ -78,12 +84,12 @@ export default function Dashboard() {
     Promise.all([
       supabase.from("courses").select("id, title, slug, thumbnail_url, lessons(id)").order("title"),
       supabase.from("lesson_progress").select("lesson_id, completed, updated_at").eq("user_id", profile.id),
-      // RLS only returns announcements for this student's enrolled, published courses.
-      supabase.from("announcements").select("id, title, body, created_at, courses(title)").order("created_at", { ascending: false }).limit(10),
+      // RLS only returns announcements for this student's enrolled, published courses, plus messages sent to them.
+      supabase.from("announcements").select("id, title, body, created_at, user_id, courses(title)").order("created_at", { ascending: false }).limit(10),
       // The welcome note is shown once, on the first visit after being enrolled.
       supabase.from("seen_items").select("item_id").eq("item_id", profile.id).maybeSingle(),
     ]).then(([c, p, a, w]) => {
-      setAnnouncements(((a.data ?? []) as unknown as Announcement[]).filter((x) => x.courses));
+      setAnnouncements(((a.data ?? []) as unknown as Announcement[]).filter((x) => x.courses || x.user_id));
       if (c.error) return setLoadError(true);
       setCourses((c.data as Course[] | null) ?? []);
       setRows((p.data as Row[] | null) ?? []);
@@ -170,7 +176,7 @@ export default function Dashboard() {
         <div key={a.id} role="status" className="mt-3 flex items-start gap-3 bg-primary px-5 py-3.5 text-sm text-primary-foreground">
           <Megaphone className="mt-0.5 size-4 shrink-0" />
           <p className="flex-1">
-            <strong>{a.courses?.title}:</strong> {a.title}
+            <strong>{a.courses?.title ?? "Message for you"}:</strong> {a.title}
             {a.body && <span className="mt-0.5 block whitespace-pre-line opacity-90">{a.body}</span>}
           </p>
           <button type="button" onClick={() => dismiss(a.id)} aria-label="Dismiss announcement" className="rounded-full p-0.5 hover:bg-background/20">
@@ -271,7 +277,7 @@ export default function Dashboard() {
                     <p className="text-sm font-medium">{a.title}</p>
                     {a.body && <p className="mt-0.5 line-clamp-3 whitespace-pre-line text-sm text-foreground/80">{a.body}</p>}
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {a.courses?.title} · {new Date(a.created_at).toLocaleDateString()}
+                      {a.courses?.title ?? "Message for you"} · {new Date(a.created_at).toLocaleDateString()}
                     </p>
                   </li>
                 ))}
@@ -298,6 +304,9 @@ export default function Dashboard() {
             </summary>
             <div className="p-4">
             <div className="aspect-video overflow-hidden bg-muted">
+              {guideVideo ? (
+                <video src={guideVideo} controls preload="metadata" className="size-full" />
+              ) : (
               <iframe
                 src="https://www.youtube-nocookie.com/embed/axUx5R6kxk4"
                 title="How to use the Scaltiva student portal"
@@ -306,6 +315,7 @@ export default function Dashboard() {
                 allowFullScreen
                 className="size-full border-0"
               />
+              )}
             </div>
             <p className="mt-2 text-sm text-muted-foreground">New here? Watch this short guide to learn how to use your courses, exercises and quizzes.</p>
             </div>

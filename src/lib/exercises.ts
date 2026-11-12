@@ -1,3 +1,5 @@
+import type { StoredFile } from "@/lib/files";
+
 export type Exercise = {
   id: string;
   course_id: string;
@@ -5,8 +7,7 @@ export type Exercise = {
   instructions: string | null;
   due_at: string | null;
   max_marks: number | null;
-  attachment_path: string | null;
-  attachment_name: string | null;
+  files: StoredFile[];
   created_at: string;
 };
 
@@ -16,8 +17,7 @@ export type Submission = {
   user_id: string;
   answer: string | null;
   link: string | null;
-  file_path: string | null;
-  file_name: string | null;
+  files: StoredFile[];
   submitted_at: string;
   marks: number | null;
   feedback: string | null;

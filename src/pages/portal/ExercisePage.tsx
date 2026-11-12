@@ -6,8 +6,8 @@ import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { markSeen } from "@/lib/seen";
 import { STATUS_CLASS, STATUS_LABEL, exerciseStatus, formatDue, type Exercise, type Submission } from "@/lib/exercises";
-import { FILE_ACCEPT, MAX_FILE_MB, removeFile, uploadFile } from "@/lib/files";
-import FileDownload from "@/components/portal/FileDownload";
+import { FILE_ACCEPT, MAX_FILE_MB, pickedFiles, removeFiles, uploadFiles, type StoredFile } from "@/lib/files";
+import { FileList } from "@/components/portal/FileDownload";
 import { card, input, label, primaryButton, secondaryButton } from "@/components/portal/form";
 import Notice, { type Message } from "@/components/portal/Notice";
 import { useToast } from "@/components/portal/Toast";
@@ -40,31 +40,29 @@ export default function ExercisePage() {
     const form = new FormData(e.currentTarget);
     const answer = String(form.get("answer")).trim() || null;
     const link = String(form.get("link")).trim() || null;
-    const picked = form.get("file") as File | null;
-    const file = picked && picked.size ? picked : null;
-    if (!answer && !link && !file && !submission?.file_path) return setMessage({ type: "error", text: "Write your answer, upload a file or add a link to your work." });
+    const picked = pickedFiles(form, "file");
+    const removed = new Set(form.getAll("remove_file").map(String));
+    const kept = (submission?.files ?? []).filter((f) => !removed.has(f.path));
+    if (!answer && !link && !picked.length && !kept.length) return setMessage({ type: "error", text: "Write your answer, upload a file or add a link to your work." });
     if (link && !/^https?:\/\/\S+$/i.test(link)) return setMessage({ type: "error", text: "The link must start with https://" });
 
     setMessage(null);
     setSaving(true);
-    let fileValues = {};
-    if (file) {
-      try {
-        const up = await uploadFile(`submissions/${profile.id}/${id}`, file);
-        fileValues = { file_path: up.path, file_name: up.name };
-      } catch (err) {
-        setSaving(false);
-        return setMessage({ type: "error", text: (err as Error).message });
-      }
+    let added: StoredFile[] = [];
+    try {
+      added = await uploadFiles(`submissions/${profile.id}/${id}`, picked);
+    } catch (err) {
+      setSaving(false);
+      return setMessage({ type: "error", text: (err as Error).message });
     }
     const { data, error } = await supabase
       .from("exercise_submissions")
-      .upsert({ exercise_id: id, user_id: profile.id, answer, link, ...fileValues }, { onConflict: "exercise_id,user_id" })
+      .upsert({ exercise_id: id, user_id: profile.id, answer, link, files: [...kept, ...added] }, { onConflict: "exercise_id,user_id" })
       .select()
       .single();
     setSaving(false);
     if (error) return setMessage({ type: "error", text: "Couldn't submit. The due date may have passed, or your work was already reviewed." });
-    if (file && submission?.file_path) await removeFile(submission.file_path);
+    await removeFiles((submission?.files ?? []).filter((f) => removed.has(f.path)));
     setSubmission(data as Submission);
     toast(submission ? "Submission updated." : "Exercise submitted.");
   }
@@ -106,9 +104,9 @@ export default function ExercisePage() {
         {exercise.max_marks ? ` · ${exercise.max_marks} marks` : ""}
       </p>
 
-      {exercise.attachment_path && exercise.attachment_name && (
+      {exercise.files.length > 0 && (
         <div className="mt-5">
-          <FileDownload path={exercise.attachment_path} name={exercise.attachment_name} label={`Download assignment: ${exercise.attachment_name}`} />
+          <FileList files={exercise.files} prefix="Download assignment: " />
         </div>
       )}
 
@@ -148,10 +146,16 @@ export default function ExercisePage() {
             <p className="mt-2 text-sm text-muted-foreground">For files, upload them to Google Drive (shared with anyone with the link) and paste the link here.</p>
           </div>
           <div>
-            <label htmlFor="file" className={label}>Upload your file (optional)</label>
-            <input id="file" name="file" type="file" accept={FILE_ACCEPT} className={`${input} file:mr-4 file:border-0 file:bg-accent file:px-3 file:py-1 file:text-sm file:font-semibold`} />
-            <p className="mt-2 text-sm text-muted-foreground">PDF, Word, Excel, CSV and more, up to {MAX_FILE_MB} MB. A new upload replaces the previous file.</p>
-            {submission?.file_path && submission.file_name && <div className="mt-3"><FileDownload path={submission.file_path} name={submission.file_name} /></div>}
+            <label htmlFor="file" className={label}>Upload your files (optional)</label>
+            <input id="file" name="file" type="file" multiple accept={FILE_ACCEPT} className={`${input} file:mr-4 file:border-0 file:bg-accent file:px-3 file:py-1 file:text-sm file:font-semibold`} />
+            <p className="mt-2 text-sm text-muted-foreground">PDF, Word, Excel, CSV and more, up to {MAX_FILE_MB} MB each. Pick several at once; new uploads are added to your files.</p>
+            {submission && submission.files.length > 0 && <div className="mt-3"><FileList files={submission.files} /></div>}
+            {submission?.files.map((f) => (
+              <label key={f.path} className="mt-2 flex items-center gap-2 text-sm">
+                <input type="checkbox" name="remove_file" value={f.path} />
+                Remove {f.name}
+              </label>
+            ))}
           </div>
           <Notice message={message} />
           {submission && <p className="text-sm text-muted-foreground">Last submitted {new Date(submission.submitted_at).toLocaleString()}. You can update it until the due date.</p>}
@@ -165,7 +169,7 @@ export default function ExercisePage() {
           <h2 className="text-xl font-semibold">Your submission</h2>
           <p className="mt-1 text-sm text-muted-foreground">Submitted {new Date(submission.submitted_at).toLocaleString()}</p>
           {submission.answer && <p className="mt-4 whitespace-pre-line bg-muted/60 p-4">{submission.answer}</p>}
-          {submission.file_path && submission.file_name && <div className="mt-3"><FileDownload path={submission.file_path} name={submission.file_name} /></div>}
+          {submission.files.length > 0 && <div className="mt-3"><FileList files={submission.files} /></div>}
           {submission.link && (
             <a href={submission.link} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 break-all font-semibold text-primary hover:underline">
               {submission.link}

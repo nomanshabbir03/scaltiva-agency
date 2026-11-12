@@ -1,5 +1,5 @@
-import { Download } from "lucide-react";
-import { downloadFile } from "@/lib/files";
+import { Download, X } from "lucide-react";
+import { downloadFile, type StoredFile } from "@/lib/files";
 import { useToast } from "@/components/portal/Toast";
 
 export default function FileDownload({ path, name, label }: { path: string; name: string; label?: string }) {
@@ -13,5 +13,23 @@ export default function FileDownload({ path, name, label }: { path: string; name
       <Download className="size-4 shrink-0" />
       <span className="truncate">{label ?? name}</span>
     </button>
+  );
+}
+
+export function FileList({ files, prefix, onRemove }: { files: StoredFile[]; prefix?: string; onRemove?: (f: StoredFile) => void }) {
+  if (!files?.length) return null;
+  return (
+    <div className="flex flex-wrap gap-2">
+      {files.map((f) => (
+        <span key={f.path} className="inline-flex max-w-full items-center gap-1">
+          <FileDownload path={f.path} name={f.name} label={prefix ? `${prefix}${f.name}` : undefined} />
+          {onRemove && (
+            <button type="button" onClick={() => onRemove(f)} aria-label={`Remove ${f.name}`} className="grid size-9 shrink-0 place-items-center border transition hover:border-red-300 hover:text-red-600">
+              <X className="size-4" />
+            </button>
+          )}
+        </span>
+      ))}
+    </div>
   );
 }

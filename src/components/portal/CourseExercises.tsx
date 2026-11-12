@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { ClipboardList, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { formatDue, type Exercise } from "@/lib/exercises";
-import { FILE_ACCEPT, MAX_FILE_MB, removeFile, uploadFile } from "@/lib/files";
+import { FILE_ACCEPT, MAX_FILE_MB, pickedFiles, removeFiles, uploadFiles, type StoredFile } from "@/lib/files";
 import { input, label, primaryButton, secondaryButton } from "@/components/portal/form";
 import Notice, { type Message } from "@/components/portal/Notice";
 import { useToast } from "@/components/portal/Toast";
@@ -38,22 +38,17 @@ function ExerciseForm({ courseId, exercise, onSaved, onCancel }: {
 
     setMessage(null);
     setSaving(true);
-    let attachment: { attachment_path: string | null; attachment_name: string | null } | object = {};
-    const picked = form.get("file") as File | null;
-    const file = picked && picked.size ? picked : null;
-    if (file) {
-      try {
-        const up = await uploadFile(`materials/${exercise?.id ?? crypto.randomUUID()}`, file);
-        attachment = { attachment_path: up.path, attachment_name: up.name };
-      } catch (err) {
-        setSaving(false);
-        return setMessage({ type: "error", text: (err as Error).message });
-      }
-    } else if (form.get("remove_file") && exercise?.attachment_path) {
-      attachment = { attachment_path: null, attachment_name: null };
+    const removed = new Set(form.getAll("remove_file").map(String));
+    const kept = (exercise?.files ?? []).filter((f) => !removed.has(f.path));
+    let added: StoredFile[] = [];
+    try {
+      added = await uploadFiles(`materials/${exercise?.id ?? crypto.randomUUID()}`, pickedFiles(form, "file"));
+    } catch (err) {
+      setSaving(false);
+      return setMessage({ type: "error", text: (err as Error).message });
     }
     const values = {
-      ...attachment,
+      files: [...kept, ...added],
       course_id: courseId,
       title,
       instructions: String(form.get("instructions")).trim() || null,
@@ -65,7 +60,7 @@ function ExerciseForm({ courseId, exercise, onSaved, onCancel }: {
       : await supabase.from("exercises").insert(values).select().single();
     setSaving(false);
     if (error) return setMessage({ type: "error", text: "Couldn't save the exercise. Please try again." });
-    if (exercise?.attachment_path && "attachment_name" in attachment) await removeFile(exercise.attachment_path);
+    await removeFiles((exercise?.files ?? []).filter((f) => removed.has(f.path)));
     onSaved(data as Exercise);
   }
 
@@ -90,15 +85,15 @@ function ExerciseForm({ courseId, exercise, onSaved, onCancel }: {
         </div>
       </div>
       <div>
-        <label htmlFor={`${prefix}-file`} className={label}>Assignment file (optional)</label>
-        <input id={`${prefix}-file`} name="file" type="file" accept={FILE_ACCEPT} className={`${input} file:mr-4 file:border-0 file:bg-accent file:px-3 file:py-1 file:text-sm file:font-semibold`} />
-        <p className="mt-2 text-sm text-muted-foreground">PDF, Word, Excel, CSV and more, up to {MAX_FILE_MB} MB. Students can download it.</p>
-        {exercise?.attachment_name && (
-          <label className="mt-2 flex items-center gap-2 text-sm">
-            <input type="checkbox" name="remove_file" />
-            Remove current file ({exercise.attachment_name})
+        <label htmlFor={`${prefix}-file`} className={label}>Assignment files (optional)</label>
+        <input id={`${prefix}-file`} name="file" type="file" multiple accept={FILE_ACCEPT} className={`${input} file:mr-4 file:border-0 file:bg-accent file:px-3 file:py-1 file:text-sm file:font-semibold`} />
+        <p className="mt-2 text-sm text-muted-foreground">PDF, Word, Excel, CSV and more, up to {MAX_FILE_MB} MB each. Pick several at once. Students can download them.</p>
+        {exercise?.files.map((f) => (
+          <label key={f.path} className="mt-2 flex items-center gap-2 text-sm">
+            <input type="checkbox" name="remove_file" value={f.path} />
+            Remove {f.name}
           </label>
-        )}
+        ))}
       </div>
       <Notice message={message} />
       <div className="flex flex-wrap gap-3">

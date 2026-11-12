@@ -9,6 +9,7 @@ import Notice, { type Message } from "@/components/portal/Notice";
 import StudentCourses from "@/components/portal/StudentCourses";
 import StudentProfileInfo from "@/components/portal/StudentProfileInfo";
 import ProgressTimeline from "@/components/portal/ProgressTimeline";
+import StudentMessages from "@/components/portal/StudentMessages";
 import { StatusBadge } from "@/pages/admin/Students";
 
 type Student = {
@@ -144,6 +145,7 @@ export default function StudentDetail() {
         </form>
       </div>
 
+      <StudentMessages studentId={student.id} />
       <StudentProfileInfo studentId={student.id} name={student.full_name} />
       <StudentCourses studentId={student.id} />
       <section className={`${card} mt-6`}>

@@ -4,6 +4,7 @@ import { BookOpen, ClipboardCheck, GraduationCap, Loader2, PlayCircle, Users } f
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { card } from "@/components/portal/form";
+import GuideVideoUpload from "@/components/portal/GuideVideoUpload";
 
 type Person = { id: string; full_name: string };
 type Enrollment = { id: string; user_id: string; enrolled_at: string; profiles: { full_name: string } | null; courses: { title: string } | null };
@@ -146,6 +147,7 @@ export default function Overview() {
           </Panel>
         </div>
       )}
+      <GuideVideoUpload />
     </div>
   );
 }
