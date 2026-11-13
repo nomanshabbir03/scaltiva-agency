@@ -127,6 +127,7 @@ export default function App() {
         <Route path="terms" element={<InfoPage slug="terms" />} />
         <Route path="faq" element={<InfoPage slug="faq" />} />
         <Route path="careers" element={<Navigate to="/work" replace />} />
+        <Route path="portfolio" element={<Navigate to="/work" replace />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
