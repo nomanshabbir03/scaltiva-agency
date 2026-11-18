@@ -1,9 +1,9 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Headset, Loader2 } from "lucide-react";
+import { Headset, Loader2, Plus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { timeAgo } from "@/lib/activity";
-import { card, input, label, primaryButton } from "@/components/portal/form";
+import { card, input, label, primaryButton, secondaryButton } from "@/components/portal/form";
 import Notice, { type Message } from "@/components/portal/Notice";
 import { useToast } from "@/components/portal/Toast";
 import SupportChat from "@/components/portal/SupportChat";
@@ -17,6 +17,7 @@ export default function Support() {
   const { profile } = useAuth();
   const toast = useToast();
   const [queries, setQueries] = useState<Query[] | null>(null);
+  const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<Message>(null);
   const [subjectLength, setSubjectLength] = useState(0);
@@ -63,44 +64,57 @@ export default function Support() {
     formEl.reset();
     setSubjectLength(0);
     setDetailLength(0);
+    setShowForm(false);
+    setOpen((data as Query).id);
     toast("Your query has been sent. We'll get back to you soon.");
   }
 
   return (
     <div className="max-w-2xl">
       <title>Online support | Scaltiva Student Portal</title>
-      <div className="flex items-center gap-3">
-        <Headset className="size-8 text-primary" />
-        <h1 className="text-3xl font-semibold">Online support</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Headset className="size-8 text-primary" />
+          <h1 className="text-3xl font-semibold">Online support</h1>
+        </div>
+        <button type="button" onClick={() => setShowForm((v) => !v)} aria-expanded={showForm} className={primaryButton}>
+          <Plus className="size-4" />
+          New Inquiry/Query
+        </button>
       </div>
       <p className="mt-2 text-muted-foreground">Have a question or a problem? Send us a query and our team will reply.</p>
 
-      <form onSubmit={onSubmit} className={`${card} mt-6 space-y-5`}>
-        <div>
-          <label htmlFor="topic" className={label}>Query related to</label>
-          <select id="topic" name="topic" required defaultValue="" className={input}>
-            <option value="" disabled>Select query related to</option>
-            {SUPPORT_TOPICS.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="subject" className={label}>Subject / Reference <span className="text-xs text-muted-foreground">(maximum 250 characters)</span></label>
-          <input id="subject" name="subject" required maxLength={250} onChange={(e) => setSubjectLength(e.target.value.length)} className={input} />
-          <p className="mt-1 text-right text-xs text-muted-foreground">{subjectLength}/250</p>
-        </div>
-        <div>
-          <label htmlFor="detail" className={label}>Query detail <span className="text-xs text-muted-foreground">(maximum 1000 characters)</span></label>
-          <textarea id="detail" name="detail" required rows={6} maxLength={1000} onChange={(e) => setDetailLength(e.target.value.length)} className={`${input} resize-y`} />
-          <p className="mt-1 text-right text-xs text-muted-foreground">{detailLength}/1000</p>
-        </div>
-        <Notice message={message} />
-        <button type="submit" disabled={saving} className={primaryButton}>
-          {saving && <Loader2 className="size-4 animate-spin" />}
-          Submit
-        </button>
-      </form>
+      {showForm && (
+        <form onSubmit={onSubmit} className={`${card} mt-4 space-y-5`}>
+          <div>
+            <label htmlFor="topic" className={label}>Query related to</label>
+            <select id="topic" name="topic" required defaultValue="" className={input}>
+              <option value="" disabled>Select query related to</option>
+              {SUPPORT_TOPICS.map((t) => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="subject" className={label}>Subject / Reference <span className="text-xs text-muted-foreground">(maximum 250 characters)</span></label>
+            <input id="subject" name="subject" required maxLength={250} onChange={(e) => setSubjectLength(e.target.value.length)} className={input} />
+            <p className="mt-1 text-right text-xs text-muted-foreground">{subjectLength}/250</p>
+          </div>
+          <div>
+            <label htmlFor="detail" className={label}>Query detail <span className="text-xs text-muted-foreground">(maximum 1000 characters)</span></label>
+            <textarea id="detail" name="detail" required rows={6} maxLength={1000} onChange={(e) => setDetailLength(e.target.value.length)} className={`${input} resize-y`} />
+            <p className="mt-1 text-right text-xs text-muted-foreground">{detailLength}/1000</p>
+          </div>
+          <Notice message={message} />
+          <div className="flex gap-3">
+            <button type="submit" disabled={saving} className={primaryButton}>
+              {saving && <Loader2 className="size-4 animate-spin" />}
+              Submit
+            </button>
+            <button type="button" onClick={() => setShowForm(false)} className={secondaryButton}>Cancel</button>
+          </div>
+        </form>
+      )}
 
-      <h2 className="mt-10 text-xl font-semibold">Your queries</h2>
+      <h2 className="mt-8 text-xl font-semibold">Your conversations</h2>
       {!queries ? (
         <div className="grid place-items-center py-10" role="status" aria-label="Loading">
           <Loader2 className="size-6 animate-spin text-primary" />
