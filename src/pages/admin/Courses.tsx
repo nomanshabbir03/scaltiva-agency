@@ -51,7 +51,7 @@ export default function Courses() {
         <h1 className="text-3xl font-semibold">Courses</h1>
         <Link
           to="/admin/courses/new"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition hover:opacity-95"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition hover:opacity-95"
         >
           <Plus className="size-4" />
           New course

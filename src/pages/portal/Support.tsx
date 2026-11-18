@@ -79,7 +79,7 @@ export default function Support() {
         </div>
         <button type="button" onClick={() => setShowForm((v) => !v)} aria-expanded={showForm} className={primaryButton}>
           <Plus className="size-4" />
-          New Inquiry/Query
+          New Query
         </button>
       </div>
       <p className="mt-2 text-muted-foreground">Have a question or a problem? Send us a query and our team will reply.</p>

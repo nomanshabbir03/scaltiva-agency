@@ -8,4 +8,4 @@ export const successBox = "bg-green-50 px-4 py-3 text-sm text-green-700";
 export const secondaryButton =
   "inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition hover:border-primary hover:text-primary disabled:opacity-60";
 export const primaryButton =
-  "flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-xl shadow-primary/25 transition hover:opacity-95 disabled:opacity-60";
+  "flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold uppercase tracking-wide text-primary-foreground transition hover:opacity-95 disabled:opacity-60";
