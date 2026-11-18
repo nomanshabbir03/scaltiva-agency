@@ -6,6 +6,8 @@ import { timeAgo } from "@/lib/activity";
 import { card, input, label, primaryButton } from "@/components/portal/form";
 import Notice, { type Message } from "@/components/portal/Notice";
 import { useToast } from "@/components/portal/Toast";
+import SupportChat from "@/components/portal/SupportChat";
+import { NewDot, markSeen, useUnseen } from "@/lib/seen";
 
 export const SUPPORT_TOPICS = ["Courses & lessons", "Exercises", "Quizzes", "Certificates", "Login & account", "Technical problem", "Other"];
 
@@ -19,6 +21,14 @@ export default function Support() {
   const [message, setMessage] = useState<Message>(null);
   const [subjectLength, setSubjectLength] = useState(0);
   const [detailLength, setDetailLength] = useState(0);
+
+  const [open, setOpen] = useState<string | null>(null);
+  const unseen = new Set(useUnseen().map((u) => u.id));
+  // Opening a conversation clears its "new reply" dot.
+  const toggle = (id: string) => {
+    setOpen(open === id ? null : id);
+    if (profile && open !== id) markSeen(profile.id, [id]);
+  };
 
   useEffect(() => {
     if (!profile) return;
@@ -108,7 +118,11 @@ export default function Support() {
                 </span>
               </div>
               <p className="text-sm text-muted-foreground">{q.topic} · {timeAgo(q.created_at)}</p>
-              <p className="mt-2 whitespace-pre-line text-sm">{q.detail}</p>
+              <button type="button" onClick={() => toggle(q.id)} aria-expanded={open === q.id} className="mt-2 text-sm font-semibold text-primary hover:underline">
+                {open === q.id ? "Hide conversation" : "View conversation"}
+              </button>
+              {unseen.has(q.id) && <NewDot className="ml-2 align-middle" />}
+              {open === q.id && <SupportChat queryId={q.id} ownerId={profile?.id ?? ""} detail={q.detail} createdAt={q.created_at} admin={false} />}
             </li>
           ))}
         </ul>

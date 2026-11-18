@@ -16,26 +16,29 @@ const EVENT = "seen-changed";
 type Candidate = UnseenItem & { changedAt?: string | null };
 
 async function loadUnseen(admin: boolean): Promise<UnseenItem[]> {
-  const [a, b, seen] = await Promise.all([
+  const [a, b, seen, replies] = await Promise.all([
     admin
       ? supabase.from("exercise_submissions").select("id, exercise_id, submitted_at").is("reviewed_at", null)
       : supabase.from("exercises").select("id"),
     admin
-      ? supabase.from("support_queries").select("id").eq("is_resolved", false)
+      ? supabase.from("support_queries").select("id, last_student_at").eq("is_resolved", false)
       : supabase.from("exercise_submissions").select("id, exercise_id, reviewed_at").not("reviewed_at", "is", null),
     supabase.from("seen_items").select("item_id, seen_at"),
+    // Students: conversations the team has replied to.
+    admin ? Promise.resolve({ data: [] }) : supabase.from("support_queries").select("id, last_admin_at").not("last_admin_at", "is", null),
   ]);
-  type R = { id: string; exercise_id?: string; submitted_at?: string; reviewed_at?: string };
+  type R = { id: string; exercise_id?: string; submitted_at?: string; reviewed_at?: string; last_student_at?: string; last_admin_at?: string };
   const first = (a.data ?? []) as R[];
   const second = (b.data ?? []) as R[];
   const candidates: Candidate[] = admin
     ? [
         ...first.map((r) => ({ id: r.id, kind: "submission" as const, exerciseId: r.exercise_id, changedAt: r.submitted_at })),
-        ...second.map((r) => ({ id: r.id, kind: "support" as const })),
+        ...second.map((r) => ({ id: r.id, kind: "support" as const, changedAt: r.last_student_at })),
       ]
     : [
         ...first.map((r) => ({ id: r.id, kind: "exercise" as const, exerciseId: r.id })),
         ...second.map((r) => ({ id: r.id, kind: "review" as const, exerciseId: r.exercise_id, changedAt: r.reviewed_at })),
+        ...((replies.data ?? []) as R[]).map((r) => ({ id: r.id, kind: "support" as const, changedAt: r.last_admin_at })),
       ];
   const seenAt = new Map(((seen.data ?? []) as { item_id: string; seen_at: string }[]).map((s) => [s.item_id, s.seen_at]));
   return candidates

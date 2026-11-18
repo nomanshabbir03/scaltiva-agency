@@ -4,12 +4,14 @@ import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { timeAgo } from "@/lib/activity";
 import { card, secondaryButton } from "@/components/portal/form";
+import SupportChat from "@/components/portal/SupportChat";
 import { useToast } from "@/components/portal/Toast";
 import { useAuth } from "@/lib/auth";
 import { NewDot, markSeen, useUnseen } from "@/lib/seen";
 
 type Query = {
   id: string;
+  user_id: string;
   topic: string;
   subject: string;
   detail: string;
@@ -35,7 +37,7 @@ export default function Support() {
   useEffect(() => {
     supabase
       .from("support_queries")
-      .select("id, topic, subject, detail, is_resolved, created_at, profiles(full_name, email)")
+      .select("id, user_id, topic, subject, detail, is_resolved, created_at, profiles(full_name, email)")
       .order("created_at", { ascending: false })
       .then(({ data, error }) => {
         if (error) toast("Couldn't load queries. Please refresh the page.", "error");
@@ -112,7 +114,7 @@ export default function Support() {
                       <p className="text-sm text-muted-foreground">
                         {q.profiles?.email} · {new Date(q.created_at).toLocaleString()}
                       </p>
-                      <p className="mt-3 whitespace-pre-line bg-muted/60 p-4">{q.detail}</p>
+                      <SupportChat queryId={q.id} ownerId={q.user_id} detail={q.detail} createdAt={q.created_at} studentName={q.profiles?.full_name} admin />
                       <div className="mt-4 flex flex-wrap gap-2">
                         <a href={`mailto:${q.profiles?.email}?subject=${encodeURIComponent(`Re: ${q.subject}`)}`} className={secondaryButton}>
                           <Reply className="size-4" />

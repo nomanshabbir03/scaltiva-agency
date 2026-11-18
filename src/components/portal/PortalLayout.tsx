@@ -54,7 +54,10 @@ export default function PortalLayout() {
   const [open, setOpen] = useState(false);
   const unseen = useUnseen();
   // Orange dot on a nav item while something inside it is new.
-  const dotFor = (to: string) => (to === "/portal/exercises" && unseen.length > 0 ? <NewDot className="absolute -right-1 -top-1" /> : null);
+  const dotFor = (to: string) => {
+    const show = to === "/portal/support" ? unseen.some((u) => u.kind === "support") : to === "/portal/exercises" && unseen.some((u) => u.kind !== "support");
+    return show ? <NewDot className="absolute -right-1 -top-1" /> : null;
+  };
 
   // Close the menu after navigating.
   useEffect(() => setOpen(false), [pathname]);
