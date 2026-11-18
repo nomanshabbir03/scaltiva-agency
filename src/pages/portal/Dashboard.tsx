@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Award, BarChart3, Headset, ListChecks, BookOpen, ClipboardList, CheckCircle2, ChevronDown, KeyRound, Loader2, Megaphone, NotebookPen, PlayCircle, TrendingUp, UserRound, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { embedUrl } from "@/lib/video";
 import { useAuth } from "@/lib/auth";
 import Avatar from "@/components/portal/Avatar";
 import { markSeen } from "@/lib/seen";
@@ -304,11 +305,11 @@ export default function Dashboard() {
             </summary>
             <div className="p-4">
             <div className="aspect-video overflow-hidden bg-muted">
-              {guideVideo ? (
+              {guideVideo && !embedUrl(guideVideo) ? (
                 <video src={guideVideo} controls preload="metadata" className="size-full" />
               ) : (
               <iframe
-                src="https://www.youtube-nocookie.com/embed/axUx5R6kxk4"
+                src={(guideVideo && embedUrl(guideVideo)) || "https://www.youtube-nocookie.com/embed/axUx5R6kxk4"}
                 title="How to use the Scaltiva student portal"
                 loading="lazy"
                 allow="accelerometer; encrypted-media; picture-in-picture"

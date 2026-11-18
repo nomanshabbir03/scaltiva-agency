@@ -67,6 +67,17 @@ export default function ExercisePage() {
     toast(submission ? "Submission updated." : "Exercise submitted.");
   }
 
+  async function onDelete() {
+    if (!submission || !window.confirm("Delete your submission? Your answer and uploaded files will be removed.")) return;
+    setSaving(true);
+    const { error } = await supabase.from("exercise_submissions").delete().eq("id", submission.id);
+    setSaving(false);
+    if (error) return setMessage({ type: "error", text: "Couldn't delete your submission. The due date may have passed, or it was already reviewed." });
+    await removeFiles(submission.files);
+    setSubmission(null);
+    toast("Submission deleted.");
+  }
+
   if (exercise === undefined) {
     return (
       <div className="grid place-items-center py-24" role="status" aria-label="Loading">
@@ -163,6 +174,11 @@ export default function ExercisePage() {
             {saving && <Loader2 className="size-4 animate-spin" />}
             {submission ? "Update submission" : "Submit"}
           </button>
+          {submission && (
+            <button type="button" onClick={onDelete} disabled={saving} className={`${secondaryButton} ml-3`}>
+              Delete submission
+            </button>
+          )}
         </form>
       ) : submission ? (
         <div className={`${card} mt-5`}>
